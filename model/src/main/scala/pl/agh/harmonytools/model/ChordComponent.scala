@@ -25,12 +25,19 @@ object ChordComponent {
     6 -> 9,
     7 -> 10,
     8 -> 12,
-    9 -> 14
+    9 -> 14,
+    10 -> 16,
+    11 -> 17,
+    12 -> 19,
+    13 -> 21
   )
 
   def apply(chordComponentString: String, isDown: Boolean = false): ChordComponent = {
-    val baseComponent   = Integer.parseInt(chordComponentString.head.toString)
-    var semitonesNumber = baseComponentPitch.getOrElse(baseComponent, sys.error("Illegal baseComponent"))
+    val baseComponent   = {
+      if (chordComponentString.head.isDigit) Integer.parseInt(chordComponentString.takeWhile(_.isDigit))
+      else Integer.parseInt(chordComponentString.reverse.takeWhile(_.isDigit).reverse)
+    }
+    var semitonesNumber = baseComponentPitch.getOrElse(baseComponent, throw new IllegalArgumentException("Illegal baseComponent: " + baseComponent))
     semitonesNumber += chordComponentString.count(_ == '<')
     semitonesNumber -= chordComponentString.count(_ == '>')
     new ChordComponent(
