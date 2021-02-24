@@ -5,7 +5,7 @@ case class Chord(
   altoNote: Note,
   tenorNote: Note,
   bassNote: Note,
-  harmonicFunction: HarmonicFunction,
+  harmonicFunction: HarmonicFunction
 ) {
   lazy val notes: List[Note] = List(sopranoNote, altoNote, tenorNote, bassNote)
 
@@ -19,8 +19,7 @@ case class Chord(
 
   def shortString: String = notes.map(_.pitch).mkString("|")
 
-  def equalsNotes(other: Chord): Boolean = {
+  def equalsNotes(other: Chord): Boolean =
     sopranoNote == other.sopranoNote && altoNote == other.altoNote &&
       tenorNote == other.tenorNote && bassNote == other.bassNote
-  }
 }
