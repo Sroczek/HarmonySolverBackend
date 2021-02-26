@@ -1,6 +1,11 @@
 package pl.agh.harmonytools.harmonics.parser
 
 import pl.agh.harmonytools.harmonics.parser.builders.{
+  BackwardDeflection,
+  BackwardDeflection1,
+  ClassicDeflection,
+  ClassicDeflection1,
+  Deflection,
   HarmonicFunctionParserBuilder,
   HarmonicsExerciseParserBuilder,
   MeasureParserBuilder
@@ -65,6 +70,38 @@ case class Delays(value: List[Delay])         extends ParserModel
 
 class HarmonicsParser extends RegexParsers {
   override val whiteSpace: Regex = """[ \t\r]+""".r
+
+  var bracketCounter: Int                           = 0
+  var currentClassicDeflection: ClassicDeflection   = ClassicDeflection1
+  var currentBackwardDeflection: BackwardDeflection = BackwardDeflection1
+  var currentDeflection: Deflection                 = currentBackwardDeflection
+
+  def increaseBracketCounter(): Unit = {
+    bracketCounter += 1
+    if (bracketCounter > 1) throw new IllegalArgumentException("Too many neighbour open brackets")
+  }
+
+  def decreaseBracketCounter(): Unit = {
+    bracketCounter -= 1
+    if (bracketCounter < 0) throw new IllegalArgumentException("Too many neighbour close brackets")
+  }
+
+  def setCurrentDeflection(isRelatedBackwards: Boolean = false): Unit =
+    if (isRelatedBackwards) currentDeflection = currentBackwardDeflection
+    else currentDeflection = currentClassicDeflection
+
+  def getNextDeflection: Deflection = {
+    currentDeflection match {
+      case _: ClassicDeflection =>
+        currentClassicDeflection = currentClassicDeflection.getNextType
+        currentClassicDeflection
+      case _: BackwardDeflection =>
+        currentBackwardDeflection = currentBackwardDeflection.getNextType
+        currentBackwardDeflection
+    }
+  }
+
+  def inDeflection: Boolean = bracketCounter == 1
 
   def key: Parser[Key]                 = """C#|c#|Cb|Db|d#|Eb|eb|F#|f#|Gb|g#|ab|Ab|a#|Bb|bb|[CcDdEeFfGgAaBb]""".r ^^ { key => Key(key) }
   def number: Parser[Int]              = """[1-9]\d*""".r ^^ { _.toInt }
@@ -160,7 +197,7 @@ class HarmonicsParser extends RegexParsers {
 
     }
 
-  def harmonicFunctionDef: Parser[HarmonicFunctionParserBuilder] =
+  def harmonicFunctionClassicDef: Parser[HarmonicFunctionParserBuilder] =
     harmonicFunctionNameDef ~ opt(
       modeDef
     ) ~ Tokens.openCurlyBracket ~ harmonicFunctionContentDef ~ Tokens.closeCurlyBracket ^^ {
@@ -171,6 +208,42 @@ class HarmonicsParser extends RegexParsers {
       case name ~ None ~ op ~ builder ~ cl =>
         builder.withBaseFunction(name)
         builder
+    }
+
+  def harmonicFunctionSingle: Parser[HarmonicFunctionParserBuilder] =
+    harmonicFunctionClassicDef ^^ { hf =>
+      if (inDeflection) hf.withType(currentDeflection)
+      hf
+    }
+
+  def singleDeflection: Parser[HarmonicFunctionParserBuilder] =
+    Tokens.openNormalBracket ~ harmonicFunctionClassicDef ~ Tokens.closeNormalBracket ^^ {
+      case o ~ hf ~ c =>
+        setCurrentDeflection(hf.getCurrentIsRelatedBackwards)
+        hf.withType(getNextDeflection)
+        hf
+    }
+
+  def startDeflection: Parser[HarmonicFunctionParserBuilder] =
+    Tokens.openNormalBracket ~ harmonicFunctionClassicDef ^^ {
+      case b ~ hf =>
+        increaseBracketCounter()
+        setCurrentDeflection(hf.getCurrentIsRelatedBackwards)
+        hf.withType(getNextDeflection)
+        hf
+    }
+
+  def endDeflection: Parser[HarmonicFunctionParserBuilder] =
+    harmonicFunctionClassicDef ~ Tokens.closeNormalBracket ^^ {
+      case hf ~ b =>
+        decreaseBracketCounter()
+        hf.withType(currentDeflection)
+        hf
+    }
+
+  def harmonicFunctionDef: Parser[HarmonicFunctionParserBuilder] =
+    singleDeflection | harmonicFunctionSingle | startDeflection | endDeflection ^^ { x =>
+      x
     }
 
   def measureDef: Parser[MeasureParserBuilder] =
@@ -193,7 +266,9 @@ object TestParser extends HarmonicsParser {
   def main(args: Array[String]): Unit = {
     parse(harmonicsExerciseDef, """C#
         |4/4
-        |T{degree:6} S{extra: 6} D{delay:4-3}""".stripMargin) match {
+        |(T{degree:6}) (S{extra: 6/isRelatedBackwards}) (D{delay:4-3})
+        |T{} S{}
+        |D{}""".stripMargin) match {
       case Success(matched, _) => println(matched)
       case Failure(msg, _)     => println(msg)
       case Error(msg, _)       => println(msg)

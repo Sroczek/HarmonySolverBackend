@@ -1,13 +1,33 @@
 package pl.agh.harmonytools.harmonics.parser.builders
 
-import pl.agh.harmonytools.model.harmonicfunction.HarmonicFunctionBuilder
 import pl.agh.harmonytools.model.harmonicfunction.FunctionNames.BaseFunction
-import pl.agh.harmonytools.model._
 import pl.agh.harmonytools.model.chord.{ChordComponent, ChordSystem}
 import pl.agh.harmonytools.model.harmonicfunction.{Delay, FunctionNames, HarmonicFunction, HarmonicFunctionBuilder}
 import pl.agh.harmonytools.model.key.{Key, Mode}
 import pl.agh.harmonytools.model.scale.ScaleDegree
 import pl.agh.harmonytools.model.util.ChordComponentManager
+
+sealed trait HarmonicsElementType
+sealed trait Deflection extends HarmonicsElementType
+sealed trait ClassicDeflection extends Deflection {
+  def getNextType: ClassicDeflection
+}
+sealed trait BackwardDeflection extends Deflection {
+  def getNextType: BackwardDeflection
+}
+case object ClassicDeflection1 extends ClassicDeflection {
+  override def getNextType: ClassicDeflection = ClassicDeflection2
+}
+case object ClassicDeflection2 extends ClassicDeflection {
+  override def getNextType: ClassicDeflection = ClassicDeflection1
+}
+case object BackwardDeflection1 extends BackwardDeflection {
+  override def getNextType: BackwardDeflection = BackwardDeflection2
+}
+case object BackwardDeflection2 extends BackwardDeflection {
+  override def getNextType: BackwardDeflection = BackwardDeflection1
+}
+case object Normal extends HarmonicsElementType
 
 class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
   private var baseFunction: Option[FunctionNames.BaseFunction] = None
@@ -22,6 +42,7 @@ class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
   private var mode: Mode.BaseMode                              = Mode.MAJOR
   private var key: Option[Key]                                 = None
   private var isRelatedBackwards: Boolean                      = false
+  private var hfType: HarmonicsElementType                     = Normal
 
   def withBaseFunction(bf: BaseFunction): Unit  = baseFunction = Some(bf)
   def withDegree(d: ScaleDegree.Degree): Unit   = degree = Some(d)
@@ -35,6 +56,11 @@ class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
   def withMode(m: Mode.BaseMode): Unit          = mode = m
   def withKey(k: Key): Unit                     = key = Some(k)
   def withIsRelatedBackwards(rb: Boolean): Unit = isRelatedBackwards = rb
+  def withType(t: HarmonicsElementType): Unit   = hfType = t
+
+  def getCurrentIsRelatedBackwards: Boolean = isRelatedBackwards
+
+  def getType: HarmonicsElementType = hfType
 
   def getHarmonicFunction: HarmonicFunction =
     HarmonicFunction(
@@ -65,6 +91,7 @@ class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
       system,
       mode,
       key,
-      isRelatedBackwards
+      isRelatedBackwards,
+      hfType
     ).mkString("(", ",", ")")
 }

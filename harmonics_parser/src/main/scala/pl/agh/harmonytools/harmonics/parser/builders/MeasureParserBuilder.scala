@@ -5,6 +5,8 @@ import pl.agh.harmonytools.harmonics.exercise.Measure
 class MeasureParserBuilder(private var harmonicFunctions: Option[List[HarmonicFunctionParserBuilder]] = None) {
   def withHarmonicFunctions(hf: List[HarmonicFunctionParserBuilder]): Unit = harmonicFunctions = Some(hf)
 
+  def getHarmonicFunctions: List[HarmonicFunctionParserBuilder] = harmonicFunctions.getOrElse(throw sys.error("HarmonicFunctions not defined yet"))
+
   def getMeasure: Measure =
     Measure(
       harmonicFunctions
