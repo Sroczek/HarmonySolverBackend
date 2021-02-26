@@ -1,0 +1,11 @@
+dev
+B
+3/4
+T{"position":"3", "system":"open"};D{};T{}
+S{};D{}
+T{};T{"position":"1"};T{"position":"3"}
+D{};D{"position":"3"}
+T{};T{"position":"5"};T{"position":"1"}
+S{};S{"position":"3"};T{}
+D{};D{"position":"5"};D{"position":"3"}
+T{}

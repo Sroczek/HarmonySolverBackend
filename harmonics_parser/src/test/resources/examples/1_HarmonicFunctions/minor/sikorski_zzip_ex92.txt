@@ -1,0 +1,11 @@
+dev
+b
+4/4
+To{"position":"1","system":"close"};So{};D{"extra":["7"],"revolution":"5"}
+To{};To{"position":"3>"};To{"position":"1","revolution":"3>"}
+So{"position":"3>"};So{"revolution":"5"}
+D{"extra":["7"],"revolution":"5"};To{};S{"position":"3"};D{"extra":["7"],"position":"3","revolution":"7"}
+To{"revolution":"3>"};To{"position":"3>"}
+So{};D{"extra":["7"]};D{"extra":["7"],"revolution":"7"}
+To{"revolution":"3>"};So{};D{"delay":[["6>","5"],["4","3"]]}
+To{}

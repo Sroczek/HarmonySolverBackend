@@ -1,0 +1,12 @@
+dev
+a
+3/4
+To{"position":"5"};S{"position":"3"};D{"extra":["7"],"position":"3","omit":["1"],"revolution":"5"}
+To{"revolution":"3>"};To{"position":"3>"}
+So{"position":"3>"};D{"extra":["7"],"revolution":"5"};To{}
+D{}
+To{"revolution":"3>"};D{"position":"5","revolution":"5","extra":["7"],"omit":["1"]};To{"position":"3>"}
+So{};So{"position":"3>"}
+D{};D{"extra":["7"],"revolution":"7","omit":["5"]}
+To{"revolution":"3>"};So{}
+To{}

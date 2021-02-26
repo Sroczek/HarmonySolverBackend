@@ -1,6 +1,6 @@
 package pl.agh.harmonytools.model.util
 
-import pl.agh.harmonytools.model.ChordComponent
+import pl.agh.harmonytools.model.chord.ChordComponent
 
 import scala.collection.immutable.HashMap
 

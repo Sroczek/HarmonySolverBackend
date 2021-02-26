@@ -1,0 +1,12 @@
+dev
+D
+4/4
+T{"position":"5"};T{"position":"1","revolution":"3"};S{"extra":["6"]}
+T{};T{"degree":3};S{};S{"degree":2,"extra":["7"],"omit":["5"]}
+D{};D{"revolution":"7","extra":["9"],"omit":["5"]};T{"revolution":"3"};T{"position":"3"}
+D{"extra":["7"], "omit":["5"]}
+T{"position":"3"};D{"extra":["7"],"revolution":"5"};T{"revolution":"3","position":"5"};S{"degree":2,"extra":["7"],"omit":["5"]}
+D{"extra":["7"]};T{"omit":["5"]};T{"revolution":"3"};S{"revolution":"3>","degree":2,"extra":["7"],"omit":["5"]}
+D{"delay":[["6","5"],["4","3"]]};D{"extra":["7"]}
+T{"degree":6};S{};So{"extra":["6"]}
+T{}

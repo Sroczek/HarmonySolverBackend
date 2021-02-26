@@ -1,0 +1,15 @@
+dev
+c
+3/4
+To{"position":"1","system":"open"};D{"revolution":"5"}
+To{"revolution":"3>"};To{"revolution":"3>","position":"5"};To{"revolution":5}
+So{"revolution":"3>"};So{"position":"3>"}
+D{}
+To{};So{"revolution":"3>"}
+To{"revolution":"5"};So{};To{}
+D{"revolution":"3"};To{}
+D{}
+To{};To{"revolution":"3>"};To{"revolution":"5"}
+So{};So{}
+D{"delay":[["6>","5"],["4","3"]]}
+To{}

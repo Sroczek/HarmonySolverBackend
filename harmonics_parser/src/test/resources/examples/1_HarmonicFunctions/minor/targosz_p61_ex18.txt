@@ -1,0 +1,13 @@
+dev
+d
+4/4
+To{"position":"5", "system":"close"};To{"position":"3>"};So{}
+D{};To{}
+So{};So{"position":"3>"};D{};D{"position":"3"}
+To{}
+To{"position":"5"};To{"position":"1"};D{}
+To{};To{"position":"5"};So{};So{"position":"1"}
+To{};So{};D{}
+To{};To{"position":"5"};To{"position":"1"};To{"position":"3>"}
+D{};D{"position":"3"}
+To{}

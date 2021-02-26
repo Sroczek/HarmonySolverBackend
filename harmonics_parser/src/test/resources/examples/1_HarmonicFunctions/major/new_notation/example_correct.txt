@@ -1,0 +1,4 @@
+C
+4/4
+(D{position:5});(S{system:open/degree:2/omit:5,1/delay:2-3,4-5}
+Do{position:1/revolution:3/isRelatedBackwards/down});T{extra:6,7/omit:5}

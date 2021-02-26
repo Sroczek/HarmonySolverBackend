@@ -1,0 +1,16 @@
+dev
+C
+3/4
+T{"position":"3"};D{"revolution":"5","extra":["7"]}
+T{"revolution":"3"};T{"position":"1"};(D{"omit":["1"],"extra":["9>"]})
+//could not avoid false relation -> remove revolution from D
+S{"degree":2};(D{});D{}
+T{};T{"degree":6};(D{"revolution":"7","isRelatedBackwards":true})
+(D{"omit":["1"],"extra":["9>"]});S{"degree":2};D{"omit":["1"],"extra":["9>"]}
+T{};(So{"extra":["6"]})
+D{};(D{"revolution":"3","extra":["7"],"isRelatedBackwards":true});So{"degree":2,"extra":["7"]}
+D{"extra":["7"]};T{};S{}
+(S{"isRelatedBackwards":true});D{"extra":["7"]}
+T{"degree":6};(D{"revolution":"5","extra":["7"]})
+S{};So{"extra":["6"]}
+T{}

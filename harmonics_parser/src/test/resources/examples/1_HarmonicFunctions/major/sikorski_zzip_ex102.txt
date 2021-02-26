@@ -1,0 +1,12 @@
+dev
+G
+3/4
+T{"position":"5"};S{};D{"extra":["7"],"omit":["1"],"revolution":"7"}
+T{"revolution":"3"};T{"position":"5"}
+D{"revolution":"3"};T{};D{"extra":["7"],"revolution":"5"}
+T{"revolution":"3"};T{"revolution":"3","position":"1"}
+S{"revolution":"3"};So{"revolution":"3>"}
+D{};D{"revolution":"7"};T{"revolution":"3"}
+D{"extra":["7"],"omit":["1"],"revolution":"3"};T{};S{}
+D{"delay":[["6","5"],["4","3"]]}
+T{}

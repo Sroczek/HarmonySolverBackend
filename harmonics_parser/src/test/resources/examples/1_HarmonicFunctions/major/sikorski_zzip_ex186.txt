@@ -1,0 +1,11 @@
+dev
+C
+3/4
+D{"position":"3"};D{"position":"5","revolution":"5"}
+T{"revolution":"3","extra":["7<"]};S{};S{"degree":2,"extra":["7"]}
+D{"extra":["7"],"omit":["5"]};T{"extra":["7<"]};T{"degree":6}
+S{};S{"extra":["6"]}
+T{};T{"extra":["6"]};D{}
+T{"delay":[["7<","8"]]};T{"position":"5","revolution":"7<"}
+T{"degree":6,"extra":["7"]};S{"degree":2,"extra":["7"]};D{"extra":["7"]}
+T{}

@@ -1,0 +1,11 @@
+dev
+D
+3/4
+T{"system":"open"}
+S{"position":"1", "revolution":"3"};D{"position":"1","revolution":"3"}
+T{};T{"position":"5"}
+S{};S{"revolution":"5"};S{"revolution":"3"}
+D{};T{"revolution":"3"};D{"revolution":"5"}
+T{"position":"3"};T{"revolution":"3", "position":"1"}
+S{};D{"delay":[["6","5"],["4","3"]]}
+T{}

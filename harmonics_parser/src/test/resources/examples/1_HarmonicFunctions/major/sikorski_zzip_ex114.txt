@@ -1,0 +1,11 @@
+dev
+C
+3/4
+T{"position":"1"};D{"position":"3"};D{"extra":["9"],"revolution":"7"}
+T{"revolution":"3"};T{"position":"3"}
+D{"revolution":"5","extra":["7"]};D{"revolution":"3","extra":["9"]};D{"revolution":"5","extra":["7"]}
+T{};T{"position":5}
+S{};D{"extra":["7"],"omit":["1"], "revolution":"7"}
+T{"revolution":"3"};T{"position":"3"};S{}
+D{"delay":[["9","8"]],"extra":["7"]};D{}
+T{}

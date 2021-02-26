@@ -1,0 +1,13 @@
+dev
+g
+3/4
+So{"degree":2,"down":true,"revolution":"3","position":"1"};So{}
+So{"down":true,"extra":["7<"],"position":"7<","degree":2};D{"omit":["1"],"revolution":"7","extra":["9>","5>"]}
+To{"delay":[["6>","5"]],"revolution":"3>"};So{"extra":["6"]}
+To{};D{"revolution":"5","extra":["7"]}
+To{"revolution":"3>"};S{"degree":2,"extra":["7"],"omit":["5"]};D{"extra":["7"]}
+To{"degree":6};So{"extra":["6"],"revolution":"3>"};To{"revolution":"5"}
+So{"degree":2,"extra":["7"],"omit":["5"]};D{"omit":["5"],"extra":["9>"]}
+To{"revolution":"3>"};To{"position":"3>"}
+So{};So{"extra":["6"]}
+To{}

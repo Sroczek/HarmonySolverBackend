@@ -1,0 +1,14 @@
+dev
+F
+4/4
+T{"position":"1"};T{"revolution":"3","extra":["7<"]};S{}
+T{};T{"revolution":"7<"};T{"degree":6};S{}
+D{};D{"extra":["7"]};T{"degree":6};S{"extra":["9","7<"],"omit":["5"]};S{"degree":2};S{"degree":2,"extra":["7"]}
+D{"delay":[["6","5"],["4","3"]]};D{"revolution":"7"}
+T{"revolution":"3","extra":["7<"]};S{"revolution":"7<"};D{"extra":["7"],"omit":["1"],"revolution":"3"};D{"extra":["7"],"omit":["5"]}
+T{};T{"revolution":"3","extra":["9","7<"],"omit":["5"]};S{};T{"degree":6,"extra":["9","7"],"omit":["5"]}
+S{"degree":2};S{"degree":2,"revolution":"7","extra":["9"],"omit":["5"]};D{"revolution":"3"};D{"extra":["9>"],"degree":3,"revolution":"7","omit":["1"]}
+T{"degree":6,"revolution":"3>"};T{"degree":6,"revolution":"5","extra":[7]};So{"degree":2,"extra":["7"]};D{"extra":["7"],"omit":["5"]}
+T{};T{"extra":["7<"]};S{"omit":["5"]};S{"extra":["7<"]}
+So{"down":true,"degree":2,"revolution":"3"};So{"degree":7,"extra":["7<"]}
+T{}

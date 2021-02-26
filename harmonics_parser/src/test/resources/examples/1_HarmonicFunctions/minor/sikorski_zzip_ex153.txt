@@ -1,0 +1,11 @@
+dev
+b
+3/4
+So{"degree":2,"down":true,"revolution":"3"};D{}
+To{"degree":6};To{"degree":3}
+So{};So{"revolution":"3>"};So{"position":"3>"}
+D{}
+To{};S{"position":"3"};D{"revolution":"7","extra":["9>"],"omit":["1"]}
+To{"revolution":"3>"};Do{"degree":7};So{"revolution":"3>"}
+D{"extra":["7"]};D{"degree":3}
+To{}

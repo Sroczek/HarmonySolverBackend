@@ -1,6 +1,7 @@
 package pl.agh.harmonytools.model
 
 import org.scalatest.{Assertion, FunSuite, Matchers}
+import pl.agh.harmonytools.model.chord.ChordComponent
 
 class ChordComponentTest extends FunSuite with Matchers {
   test("base component correct set") {

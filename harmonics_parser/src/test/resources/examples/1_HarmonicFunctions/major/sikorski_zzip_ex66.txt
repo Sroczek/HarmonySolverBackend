@@ -1,0 +1,16 @@
+dev
+Eb
+2/2
+D{"system":"close","position":"3"}
+T{"revolution":"3"};D{"revolution":"5"}
+T{};T{"revolution":"3"}
+S{};S{}
+D{};D{"revolution":"3"}
+T{"position":"3"};D{"position":"1","revolution":"5"}
+T{"position":"1","revolution":"3"};T{"position":"3"}
+D{};T{}
+S{};S{"position":"3"}
+D{};D{"position":"5","revolution":"3"}
+T{};S{}
+D{"delay":[["6","5"],["4","3"]]}
+T{}

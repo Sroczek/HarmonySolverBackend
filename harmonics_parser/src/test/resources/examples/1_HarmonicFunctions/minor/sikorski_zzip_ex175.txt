@@ -1,0 +1,11 @@
+dev
+c
+3/4
+To{"revolution":"3>","position":"1"};So{"extra":["6"]}
+To{"delay":[["6>","5"],["4","3>"]]};Do{"degree":3,"extra":["7<"],"omit":["5"]}
+To{"degree":6};So{"degree":2,"extra":["7"]};D{"revolution":"7","omit":["1"],"extra":["9>"]}
+To{"revolution":"3>"};Do{"extra":["6>"]};So{"degree":2}
+D{};Do{"degree":3,"omit":["5"],"extra":["7<"]}
+To{"degree":6};To{"position":"3>"};Do{"revolution":"5","degree":3,"extra":["7<"]}
+To{"degree":6,"extra":["7<"]};So{"revolution":"5>","degree":2,"extra":["7"]};D{"extra":["7"],"omit":["5"]}
+To{}

@@ -1,0 +1,11 @@
+dev
+E
+4/4
+T{"revolution":"5"};S{"revolution":"3","position":"5"};D{"extra":["9"],"omit":["1"],"revolution":"3"}
+T{};T{};D{"revolution":"7"};D{"position":"7"}
+T{"omit":["5"]};So{};D{"revolution":"7","extra":["9>"],"omit":["1"]}
+T{"revolution":"3"};T{};D{}
+D{};D{"extra":["9"],"revolution":"7","omit":["1"],"revolution":"3"};T{}
+So{"revolution":"3>"};D{"delay":[["2>","1"]], "revolution":"1"}
+T{"omit":["5"]};So{};D{"delay":[["6","5"],["4","3"]]};D{"extra":["7"]}
+T{};So{};T{}

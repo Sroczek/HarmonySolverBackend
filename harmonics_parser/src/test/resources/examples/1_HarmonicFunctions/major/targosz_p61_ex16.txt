@@ -1,0 +1,11 @@
+dev
+F
+4/4
+T{"position":"1", "system":"close"};T{"position":"3"};S{}
+D{};D{"position":"1"}
+T{};T{"position":"3"};S{};S{"position":"3"}
+D{};D{"position":"5"}
+T{};T{"position":"5"};S{}
+D{};D{"position":"3"};T{};T{"position":"5"}
+S{};S{"position":"1"};T{};D{}
+T{};T{"position":"1"}

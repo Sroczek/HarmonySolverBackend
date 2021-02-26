@@ -1,0 +1,11 @@
+dev
+d
+4/4
+To{"position":"1","revolution":"3>","system":"close"};D{"revolution":"5"};To{}
+So{"revolution":"5"};D{"revolution":"3"}
+To{};So{"revolution":"5"};To{};To{"revolution":"3>"}
+D{}
+D{"revolution":"3"};To{};To{"revolution":"5"}
+So{"revolution":"3>"};So{"position":"3>"};So{"revolution":"3>"}
+To{};D{};To{};So{}
+To{}
