@@ -1,7 +1,6 @@
-dev
 C
 4/4
-T{};(D{"extra":["7"]});[T{"degree":6}]
-D{};T{}
-T{};(D{"extra":["7"]});[D{}]
-D{};T{}
+T{} (D{extra:7}) [T{degree:6}]
+D{} T{}
+T{} (D{extra:7}) [D{}]
+D{} T{}

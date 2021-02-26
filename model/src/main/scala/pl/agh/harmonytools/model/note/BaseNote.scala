@@ -1,14 +1,32 @@
 package pl.agh.harmonytools.model.note
 
-object BaseNote extends Enumeration {
-  case class BaseNote(value: Int) extends Val
-  type BaseNoteType = Value
+object BaseNote  {
+  sealed abstract class BaseNoteType(value: Int) {
+    def +(x: Int): BaseNoteType = {
+      fromInt((value + x) % 7)
+    }
+  }
 
-  val C: BaseNote = BaseNote(0)
-  val D: BaseNote = BaseNote(1)
-  val E: BaseNote = BaseNote(2)
-  val F: BaseNote = BaseNote(3)
-  val G: BaseNote = BaseNote(4)
-  val A: BaseNote = BaseNote(5)
-  val B: BaseNote = BaseNote(6)
+  case object C extends BaseNoteType(0)
+  case object D extends BaseNoteType(1)
+  case object E extends BaseNoteType(2)
+  case object F extends BaseNoteType(3)
+  case object G extends BaseNoteType(4)
+  case object A extends BaseNoteType(5)
+  case object B extends BaseNoteType(6)
+
+  val values: List[BaseNoteType] = List(C, D, E, F, G, A, B)
+
+  def fromInt(x: Int): BaseNoteType = {
+    require(0 <= x && x < 7, "Base note should be from [0,6]")
+    x % 7 match {
+      case 0 => C
+      case 1 => D
+      case 2 => E
+      case 3 => F
+      case 4 => G
+      case 5 => A
+      case 6 => B
+    }
+  }
 }

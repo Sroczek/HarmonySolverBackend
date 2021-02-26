@@ -1,7 +1,7 @@
 package pl.agh.harmonytools.model.scale
 
 object ScaleDegree {
-  sealed abstract class Degree(root: Int)
+  sealed abstract class Degree(val root: Int)
 
   case object I   extends Degree(1)
   case object II  extends Degree(2)

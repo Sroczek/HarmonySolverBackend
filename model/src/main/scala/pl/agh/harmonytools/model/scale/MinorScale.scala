@@ -4,8 +4,8 @@ import pl.agh.harmonytools.model.key.Key
 import pl.agh.harmonytools.model.note.BaseNote
 
 case class MinorScale(private val minorKey: Key) extends Scale {
-  override protected val key: Key = minorKey
-  override protected val pitches: List[Int] = List(0, 2, 3, 5, 7, 8, 10)
+  override val key: Key = minorKey
+  override val pitches: List[Int] = List(0, 2, 3, 5, 7, 8, 10)
 }
 
 object MinorScale {

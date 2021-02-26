@@ -8,7 +8,8 @@ import pl.agh.harmonytools.model.scale.ScaleDegree
 import pl.agh.harmonytools.model.util.ChordComponentManager
 
 sealed trait HarmonicsElementType
-sealed trait Deflection extends HarmonicsElementType
+sealed trait Deflection        extends HarmonicsElementType
+sealed trait EllipseDeflection extends Deflection
 sealed trait ClassicDeflection extends Deflection {
   def getNextType: ClassicDeflection
 }
@@ -27,7 +28,8 @@ case object BackwardDeflection1 extends BackwardDeflection {
 case object BackwardDeflection2 extends BackwardDeflection {
   override def getNextType: BackwardDeflection = BackwardDeflection1
 }
-case object Normal extends HarmonicsElementType
+case object Normal  extends HarmonicsElementType
+case object Ellipse extends EllipseDeflection
 
 class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
   private var baseFunction: Option[FunctionNames.BaseFunction] = None
@@ -58,9 +60,15 @@ class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
   def withIsRelatedBackwards(rb: Boolean): Unit = isRelatedBackwards = rb
   def withType(t: HarmonicsElementType): Unit   = hfType = t
 
-  def getCurrentIsRelatedBackwards: Boolean = isRelatedBackwards
-
-  def getType: HarmonicsElementType = hfType
+  def getIsRelatedBackwards: Boolean = isRelatedBackwards
+  def getKey: Option[Key]            = key
+  def getType: HarmonicsElementType  = hfType
+  def getDegree: ScaleDegree.Degree =
+    degree match {
+      case Some(value) => value
+      case None        => baseFunction.getOrElse(sys.error("Base Function undefined")).baseDegree
+    }
+  def getIsDown: Boolean = isDown
 
   def getHarmonicFunction: HarmonicFunction =
     HarmonicFunction(

@@ -5,8 +5,6 @@ import pl.agh.harmonytools.harmonics.exercise
 import pl.agh.harmonytools.harmonics.parser.DeflectionsHandler
 import pl.agh.harmonytools.model.key.Key
 
-import scala.annotation.tailrec
-
 class HarmonicsExerciseParserBuilder(
   private var key: Option[Key] = None,
   private var meter: Option[Meter] = None,
@@ -19,11 +17,11 @@ class HarmonicsExerciseParserBuilder(
 
   def getHarmonicsExercise: HarmonicsExercise = {
 
-    val exKey      = key.getOrElse(sys.error("Key should be declared to initialize HarmonicsExercise"))
-    val exMeter    = meter.getOrElse(sys.error("Meter should be declared to initialize HarmonicsExercise"))
-    val exMeasures = measures.getOrElse(sys.error("Measures should be declared to initialize HarmonicsExercise"))
+    implicit val exKey: Key = key.getOrElse(sys.error("Key should be declared to initialize HarmonicsExercise"))
+    val exMeter             = meter.getOrElse(sys.error("Meter should be declared to initialize HarmonicsExercise"))
+    val exMeasures          = measures.getOrElse(sys.error("Measures should be declared to initialize HarmonicsExercise"))
 
-    //todo użyć walidatora tutaj, obsłużyć delaye, poustawiać key, wykonać czynności z "CONSTRUCTOR PART 2"
+    //todo użyć walidatora tutaj, obsłużyć delaye, wykonać czynności z "CONSTRUCTOR PART 2"?
 
     DeflectionsHandler.handle(exMeasures.flatMap(_.getHarmonicFunctions))
 
