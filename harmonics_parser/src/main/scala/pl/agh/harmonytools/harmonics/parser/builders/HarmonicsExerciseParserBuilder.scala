@@ -21,8 +21,6 @@ class HarmonicsExerciseParserBuilder(
     val exMeter             = meter.getOrElse(sys.error("Meter should be declared to initialize HarmonicsExercise"))
     val exMeasures          = measures.getOrElse(sys.error("Measures should be declared to initialize HarmonicsExercise"))
 
-    //todo obsłużyć delaye, wykonać czynności z "CONSTRUCTOR PART 2"?
-
     DeflectionsHandler.handle(exMeasures.flatMap(_.getHarmonicFunctions))
 
     exercise.HarmonicsExercise(

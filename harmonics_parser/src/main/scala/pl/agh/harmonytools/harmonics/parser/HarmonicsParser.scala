@@ -24,6 +24,7 @@ import pl.agh.harmonytools.model.util.ChordComponentManager
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.RegexParsers
+import scala.language.implicitConversions
 
 object Tokens {
   final val colon              = ":"
@@ -189,7 +190,7 @@ class HarmonicsParser extends RegexParsers {
                 ChordComponentManager.chordComponentFromString(x)
               implicit def stringListToChordComponentList(xs: List[String]): List[ChordComponent] =
                 xs.map(stringToChordComponent)
-//todo ustawic is down
+
               rep.map(_._2).prepended(hfContent).foreach {
                 case s: System              => builder.withSystem(s)
                 case d: Delays              => builder.withDelay(d.value)
@@ -265,7 +266,7 @@ class HarmonicsParser extends RegexParsers {
     endDeflection | singleDeflection | startDeflection | harmonicFunctionSingle | ellipse ^^ { x => x }
 
   def measureDef: Parser[MeasureParserBuilder] =
-    rep1(harmonicFunctionDef) ~ separator ^^ {
+    rep(Tokens.newline) ~> rep1(harmonicFunctionDef) ~ separator ^^ {
       case functions ~ separator => new MeasureParserBuilder(Some(functions))
     }
 
@@ -273,7 +274,7 @@ class HarmonicsParser extends RegexParsers {
     rep1(measureDef) ^^ { measure => measure }
 
   def harmonicsExerciseDef: Parser[HarmonicsExercise] =
-    key ~ Tokens.newline ~ meter ~ Tokens.newline ~ measuresDef ^^ {
+    rep(Tokens.newline) ~> key ~ rep1(Tokens.newline) ~ meter ~ Tokens.newline ~ measuresDef ^^ {
       case key ~ nw1 ~ meter ~ nw2 ~ measures =>
         new HarmonicsExerciseParserBuilder(Some(key), Some(meter), Some(measures)).getHarmonicsExercise
     }
@@ -286,7 +287,7 @@ object TestParser extends HarmonicsParser {
       harmonicsExerciseDef,
       """C
         |4/4
-        |(S{} D{}) (D{}) S{} T{} (S{isRelatedBackwards})""".stripMargin
+        |S{delay: 4-3}""".stripMargin
     ) match {
       case Success(matched, _) =>
         println(Seq(matched.measures.map(_.harmonicFunctions.length).sum.toString, matched).mkString(": "))

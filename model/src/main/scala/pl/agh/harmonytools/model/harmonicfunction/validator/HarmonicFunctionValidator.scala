@@ -51,7 +51,7 @@ class HarmonicFunctionValidator(private val hf: HarmonicFunction) {
       handleValidationFailure("Extra does not contain revolution which is not standard chord component")
   }
 
-  private def handleValidationFailure(msg: String) {
+  private def handleValidationFailure(msg: String): Unit = {
     throw HarmonicFunctionValidationError("HarmonicFunction validation error: " + msg)
   }
 }

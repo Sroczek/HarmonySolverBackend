@@ -25,9 +25,11 @@ class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
   override def withIsRelatedBackwards(rb: Boolean): Unit = isRelatedBackwards = rb
   def withType(t: HarmonicsElementType): Unit            = hfType = t
 
-  def getIsRelatedBackwards: Boolean = isRelatedBackwards
-  def getKey: Option[Key]            = key
-  def getType: HarmonicsElementType  = hfType
+  def getIsRelatedBackwards: Boolean      = isRelatedBackwards
+  def getKey: Option[Key]                 = key
+  def getType: HarmonicsElementType       = hfType
+  def getPosition: Option[ChordComponent] = position
+  def getRevolution: ChordComponent       = revolution
 
   private def createBasicBuilder(f: ChordComponent => ChordComponent): HarmonicFunctionBasicBuilder = {
     val basicBuilder = new HarmonicFunctionBasicBuilder
@@ -55,9 +57,35 @@ class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
   }
 
   override def preprocessHarmonicFunction(): HarmonicFunction = {
-    def ccToDown(cc: ChordComponent): ChordComponent = ChordComponentManager.chordComponentFromString(cc.chordComponentString, isDown = true)
+    def ccToDown(cc: ChordComponent): ChordComponent =
+      ChordComponentManager.chordComponentFromString(cc.chordComponentString, isDown = true)
     val mapper: ChordComponent => ChordComponent = if (isDown) ccToDown else (x => x)
     createBasicBuilder(mapper).getHarmonicFunction
+  }
+
+  def copy(): HarmonicFunctionParserBuilder = {
+    val builder = new HarmonicFunctionParserBuilder
+    builder.withBaseFunction(
+      baseFunction.getOrElse(sys.error("Base Function has to be defined to initialize HarmonicFunction"))
+    )
+    builder.withDegree(getDegree)
+    position match {
+      case Some(p) => builder.withPosition(p)
+      case _       =>
+    }
+    builder.withRevolution(revolution)
+    builder.withDelay(delay)
+    builder.withExtra(extra)
+    builder.withOmit(omit)
+    builder.withIsDown(isDown)
+    builder.withSystem(system)
+    builder.withMode(mode)
+    key match {
+      case Some(k) => builder.withKey(k)
+      case _       =>
+    }
+    builder.withIsRelatedBackwards(isRelatedBackwards)
+    builder
   }
 
   override def toString: String =

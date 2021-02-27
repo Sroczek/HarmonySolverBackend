@@ -2,9 +2,11 @@ package pl.agh.harmonytools.harmonics.parser
 
 import org.scalatest.{Assertion, BeforeAndAfterEach, FunSuite, Ignore, Matchers}
 import pl.agh.harmonytools.harmonics.exercise.HarmonicsExercise
+import pl.agh.harmonytools.model.harmonicfunction.Delay
 import pl.agh.harmonytools.model.harmonicfunction.FunctionNames.TONIC
 import pl.agh.harmonytools.model.key.Key
 import pl.agh.harmonytools.model.scale.ScaleDegree.VI
+import pl.agh.harmonytools.model.util.ChordComponentManager
 
 import scala.io.Source
 import scala.reflect.ClassTag
@@ -164,6 +166,122 @@ class HarmonicsParserTest extends FunSuite with Matchers with BeforeAndAfterEach
         |(D{}) [] T{}
         |""".stripMargin)
   }
+
+  private lazy val simpleDelayExercise = getParserOutput("""C
+      |3/4
+      |T{delay:4-3}
+      |""".stripMargin).get
+
+  test("Dividing function into two - delays") {
+    simpleDelayExercise.measures.head.harmonicFunctions.size shouldBe 2
+  }
+
+  test("Transformation of first child function correctness - delays") {
+    val first = simpleDelayExercise.measures.head.harmonicFunctions.head
+    first.omit shouldBe List(ChordComponentManager.chordComponentFromString("3"))
+    first.extra shouldBe List(ChordComponentManager.chordComponentFromString("4"))
+    first.delay shouldBe List(Delay("4", "3"))
+  }
+
+  test("Transformation of second child function correctness - delays") {
+    val second = simpleDelayExercise.measures.head.harmonicFunctions(1)
+    second.omit shouldBe List()
+    second.extra shouldBe List()
+    second.delay shouldBe List()
+  }
+
+  test("Transformation with delay and fixed position") {
+    val exercise = getParserOutput("""C
+        |3/4
+        |T{delay:4-3/position:3}
+        |""".stripMargin).get
+
+    exercise.measures.head.harmonicFunctions.head.position shouldBe Some(
+      ChordComponentManager.chordComponentFromString("4")
+    )
+    exercise.measures.head.harmonicFunctions(1).position shouldBe Some(
+      ChordComponentManager.chordComponentFromString("3")
+    )
+  }
+
+  test("Transformation with delay and fixed revolution") {
+    val exercise = getParserOutput("""C
+        |3/4
+        |T{delay:4-3/revolution:3}
+        |""".stripMargin).get
+
+    exercise.measures.head.harmonicFunctions.head.revolution shouldBe ChordComponentManager.chordComponentFromString(
+      "4"
+    )
+    exercise.measures.head.harmonicFunctions(1).revolution shouldBe ChordComponentManager.chordComponentFromString("3")
+  }
+
+  test("More measures with delayed functions") {
+    val exercise = getParserOutput("""C
+        |3/4
+        |T{delay:4-3} T{delay:4-3}
+        |T{delay:4-3}
+        |T{delay:4-3} T{delay:4-3}
+        |""".stripMargin).get
+    exercise.measures.map(_.harmonicFunctions.length).sum shouldBe 10
+  }
+
+  test("Double delayed function transformation") {
+    val exercise = getParserOutput("""C
+        |3/4
+        |T{delay:6-5,4-3}
+        |""".stripMargin).get
+    val first    = exercise.measures.head.harmonicFunctions.head
+    first.extra shouldBe List(
+      ChordComponentManager.chordComponentFromString("6"),
+      ChordComponentManager.chordComponentFromString("4")
+    )
+    first.omit shouldBe List(
+      ChordComponentManager.chordComponentFromString("5"),
+      ChordComponentManager.chordComponentFromString("3")
+    )
+  }
+
+  test("Triple delayed function transformation") {
+    val exercise = getParserOutput("""C
+        |3/4
+        |T{delay:6-5,4-3,2-1}
+        |""".stripMargin).get
+    val first    = exercise.measures.head.harmonicFunctions.head
+    first.extra shouldBe List(
+      ChordComponentManager.chordComponentFromString("6"),
+      ChordComponentManager.chordComponentFromString("4"),
+      ChordComponentManager.chordComponentFromString("2")
+    )
+    first.omit shouldBe List(
+      ChordComponentManager.chordComponentFromString("5"),
+      ChordComponentManager.chordComponentFromString("3"),
+      ChordComponentManager.chordComponentFromString("1")
+    )
+  }
+
+  test("Exercise with empty lines") {
+    testForSuccess(
+      """
+        |
+        |
+        |C
+        |
+        |
+        |
+        |4/4
+        |
+        |T{}
+        |
+        |
+        |
+        |S{}
+        |
+        |
+        |D{}
+        |""".stripMargin)
+  }
+
 }
 
 object HarmonicsParserTest extends HarmonicsParser {
