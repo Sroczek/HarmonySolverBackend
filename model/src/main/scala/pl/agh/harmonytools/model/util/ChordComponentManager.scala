@@ -15,7 +15,7 @@ object ChordComponentManager {
       case Some((key, value)) => value
       case None =>
         val cc = ChordComponent(chordComponentString, isDown)
-        availableChordComponents = availableChordComponents.updated((chordComponentString, isDown), cc)
+        availableChordComponents = availableChordComponents + ((chordComponentString, isDown) -> cc)
         cc
     }
   }

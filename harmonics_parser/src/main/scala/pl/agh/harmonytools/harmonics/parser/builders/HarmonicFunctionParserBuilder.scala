@@ -6,6 +6,7 @@ import pl.agh.harmonytools.model.harmonicfunction.builder.{HarmonicFunctionBasic
 import pl.agh.harmonytools.model.harmonicfunction.{Delay, FunctionNames, HarmonicFunction}
 import pl.agh.harmonytools.model.key.{Key, Mode}
 import pl.agh.harmonytools.model.scale.ScaleDegree
+import pl.agh.harmonytools.model.util.ChordComponentManager
 
 class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
   private var hfType: HarmonicsElementType = Normal
@@ -28,20 +29,20 @@ class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
   def getKey: Option[Key]            = key
   def getType: HarmonicsElementType  = hfType
 
-  override def preprocessHarmonicFunction(): HarmonicFunction = {
+  private def createBasicBuilder(f: ChordComponent => ChordComponent): HarmonicFunctionBasicBuilder = {
     val basicBuilder = new HarmonicFunctionBasicBuilder
     basicBuilder.withBaseFunction(
       baseFunction.getOrElse(sys.error("Base Function has to be defined to initialize HarmonicFunction"))
     )
     basicBuilder.withDegree(getDegree)
     position match {
-      case Some(p) => basicBuilder.withPosition(p)
+      case Some(p) => basicBuilder.withPosition(f(p))
       case _       =>
     }
-    basicBuilder.withRevolution(revolution)
-    basicBuilder.withDelay(delay)
-    basicBuilder.withExtra(extra)
-    basicBuilder.withOmit(omit)
+    basicBuilder.withRevolution(f(revolution))
+    basicBuilder.withDelay(delay.map(d => Delay(f(d.first), f(d.second))))
+    basicBuilder.withExtra(extra.map(f(_)))
+    basicBuilder.withOmit(omit.map(f(_)))
     basicBuilder.withIsDown(isDown)
     basicBuilder.withSystem(system)
     basicBuilder.withMode(mode)
@@ -50,7 +51,13 @@ class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
       case _       =>
     }
     basicBuilder.withIsRelatedBackwards(isRelatedBackwards)
-    basicBuilder.getHarmonicFunction
+    basicBuilder
+  }
+
+  override def preprocessHarmonicFunction(): HarmonicFunction = {
+    def ccToDown(cc: ChordComponent): ChordComponent = ChordComponentManager.chordComponentFromString(cc.chordComponentString, isDown = true)
+    val mapper: ChordComponent => ChordComponent = if (isDown) ccToDown else (x => x)
+    createBasicBuilder(mapper).getHarmonicFunction
   }
 
   override def toString: String =

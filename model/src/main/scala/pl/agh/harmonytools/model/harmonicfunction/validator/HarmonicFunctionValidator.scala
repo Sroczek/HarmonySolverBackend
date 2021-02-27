@@ -1,6 +1,6 @@
 package pl.agh.harmonytools.model.harmonicfunction.validator
 
-import pl.agh.harmonytools.model.harmonicfunction.{HarmonicFunction}
+import pl.agh.harmonytools.model.harmonicfunction.HarmonicFunction
 
 class HarmonicFunctionValidator(private val hf: HarmonicFunction) {
 
@@ -43,7 +43,7 @@ class HarmonicFunctionValidator(private val hf: HarmonicFunction) {
       handleValidationFailure("Count of chord components is too large - there are only 4 voices")
 
   private def checkIfExtraContainsPosition(): Unit =
-    if (hf.position.isDefined && !hf.getBasicChordComponents.contains(hf.position) && !hf.extra.contains(hf.position))
+    if (hf.position.isDefined && !hf.getBasicChordComponents.contains(hf.position.get) && !hf.extra.contains(hf.position.get))
       handleValidationFailure("Extra does not contain position which is not standard chord component")
 
   private def checkIfExtraContainsRevolution(): Unit = {

@@ -189,7 +189,7 @@ class HarmonicsParser extends RegexParsers {
                 ChordComponentManager.chordComponentFromString(x)
               implicit def stringListToChordComponentList(xs: List[String]): List[ChordComponent] =
                 xs.map(stringToChordComponent)
-
+//todo ustawic is down
               rep.map(_._2).prepended(hfContent).foreach {
                 case s: System              => builder.withSystem(s)
                 case d: Delays              => builder.withDelay(d.value)
