@@ -2,6 +2,7 @@ package pl.agh.harmonytools.model.note
 
 import pl.agh.harmonytools.model.chord.ChordComponent
 import pl.agh.harmonytools.model.util.ChordComponentManager
+import pl.agh.harmonytools.utils.Extensions.ExtendedInt
 
 case class Note(
   pitch: Int,
@@ -24,7 +25,7 @@ case class Note(
   def equalPitches(other: Note): Boolean = pitch == other.pitch
 
   def equalsInOneOctave(other: Note): Boolean = {
-    (pitch % 12 == other.pitch % 12) && baseNote == other.baseNote && chordComponent == other.chordComponent
+    (pitch %% 12 == other.pitch %% 12) && baseNote == other.baseNote && chordComponent == other.chordComponent
   }
 }
 

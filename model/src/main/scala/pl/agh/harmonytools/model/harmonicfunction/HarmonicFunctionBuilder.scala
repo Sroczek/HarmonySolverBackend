@@ -3,6 +3,7 @@ package pl.agh.harmonytools.model.harmonicfunction
 import pl.agh.harmonytools.model._
 import pl.agh.harmonytools.model.chord.{ChordComponent, ChordSystem}
 import pl.agh.harmonytools.model.harmonicfunction.FunctionNames.BaseFunction
+import pl.agh.harmonytools.model.harmonicfunction.validator.HarmonicFunctionValidator
 import pl.agh.harmonytools.model.key.{Key, Mode}
 import pl.agh.harmonytools.model.scale.ScaleDegree
 
@@ -31,5 +32,11 @@ trait HarmonicFunctionBuilder {
 
   def withIsRelatedBackwards(rb: Boolean): Unit
 
-  def getHarmonicFunction: HarmonicFunction
+  protected def preprocessHarmonicFunction(): HarmonicFunction
+
+  final def getHarmonicFunction: HarmonicFunction = {
+    val hf = preprocessHarmonicFunction()
+    new HarmonicFunctionValidator(hf).validate()
+    hf
+  }
 }

@@ -46,18 +46,18 @@ class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
   private var isRelatedBackwards: Boolean                      = false
   private var hfType: HarmonicsElementType                     = Normal
 
-  def withBaseFunction(bf: BaseFunction): Unit  = baseFunction = Some(bf)
-  def withDegree(d: ScaleDegree.Degree): Unit   = degree = Some(d)
-  def withPosition(p: ChordComponent): Unit     = position = Some(p)
-  def withRevolution(r: ChordComponent): Unit   = revolution = r
-  def withDelay(d: List[Delay]): Unit           = delay = d
-  def withExtra(e: List[ChordComponent]): Unit  = extra = e
-  def withOmit(o: List[ChordComponent]): Unit   = omit = o
-  def withIsDown(d: Boolean): Unit              = isDown = d
-  def withSystem(s: ChordSystem.System): Unit   = system = s
-  def withMode(m: Mode.BaseMode): Unit          = mode = m
-  def withKey(k: Key): Unit                     = key = Some(k)
-  def withIsRelatedBackwards(rb: Boolean): Unit = isRelatedBackwards = rb
+  override def withBaseFunction(bf: BaseFunction): Unit  = baseFunction = Some(bf)
+  override def withDegree(d: ScaleDegree.Degree): Unit   = degree = Some(d)
+  override def withPosition(p: ChordComponent): Unit     = position = Some(p)
+  override def withRevolution(r: ChordComponent): Unit   = revolution = r
+  override def withDelay(d: List[Delay]): Unit           = delay = d
+  override def withExtra(e: List[ChordComponent]): Unit  = extra = e
+  override def withOmit(o: List[ChordComponent]): Unit   = omit = o
+  override def withIsDown(d: Boolean): Unit              = isDown = d
+  override def withSystem(s: ChordSystem.System): Unit   = system = s
+  override def withMode(m: Mode.BaseMode): Unit          = mode = m
+  override def withKey(k: Key): Unit                     = key = Some(k)
+  override def withIsRelatedBackwards(rb: Boolean): Unit = isRelatedBackwards = rb
   def withType(t: HarmonicsElementType): Unit   = hfType = t
 
   def getIsRelatedBackwards: Boolean = isRelatedBackwards
@@ -70,7 +70,7 @@ class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
     }
   def getIsDown: Boolean = isDown
 
-  def getHarmonicFunction: HarmonicFunction =
+  override def preprocessHarmonicFunction(): HarmonicFunction =
     HarmonicFunction(
       baseFunction.getOrElse(sys.error("Base Function has to be defined to initialize HarmonicFunction")),
       degree,

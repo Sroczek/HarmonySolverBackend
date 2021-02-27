@@ -1,9 +1,11 @@
 package pl.agh.harmonytools.model.note
 
+import pl.agh.harmonytools.utils.Extensions.ExtendedInt
+
 object BaseNote  {
   sealed abstract class BaseNoteType(value: Int) {
     def +(x: Int): BaseNoteType = {
-      fromInt((value + x) % 7)
+      fromInt((value + x) %% 7)
     }
   }
 
@@ -19,7 +21,7 @@ object BaseNote  {
 
   def fromInt(x: Int): BaseNoteType = {
     require(0 <= x && x < 7, "Base note should be from [0,6]")
-    x % 7 match {
+    x match {
       case 0 => C
       case 1 => D
       case 2 => E
