@@ -31,36 +31,21 @@ class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
   def getPosition: Option[ChordComponent] = position
   def getRevolution: ChordComponent       = revolution
 
-  private def createBasicBuilder(f: ChordComponent => ChordComponent): HarmonicFunctionBasicBuilder = {
-    val basicBuilder = new HarmonicFunctionBasicBuilder
-    basicBuilder.withBaseFunction(
-      baseFunction.getOrElse(sys.error("Base Function has to be defined to initialize HarmonicFunction"))
-    )
-    basicBuilder.withDegree(getDegree)
-    position match {
-      case Some(p) => basicBuilder.withPosition(f(p))
-      case _       =>
-    }
-    basicBuilder.withRevolution(f(revolution))
-    basicBuilder.withDelay(delay.map(d => Delay(f(d.first), f(d.second))))
-    basicBuilder.withExtra(extra.map(f(_)))
-    basicBuilder.withOmit(omit.map(f(_)))
-    basicBuilder.withIsDown(isDown)
-    basicBuilder.withSystem(system)
-    basicBuilder.withMode(mode)
-    key match {
-      case Some(k) => basicBuilder.withKey(k)
-      case _       =>
-    }
-    basicBuilder.withIsRelatedBackwards(isRelatedBackwards)
-    basicBuilder
-  }
-
   override def preprocessHarmonicFunction(): HarmonicFunction = {
-    def ccToDown(cc: ChordComponent): ChordComponent =
-      ChordComponentManager.chordComponentFromString(cc.chordComponentString, isDown = true)
-    val mapper: ChordComponent => ChordComponent = if (isDown) ccToDown else (x => x)
-    createBasicBuilder(mapper).getHarmonicFunction
+    HarmonicFunction(
+      baseFunction.getOrElse(sys.error("Base Function has to be defined to initialize HarmonicFunction")),
+      degree,
+      position,
+      revolution,
+      delay,
+      extra,
+      omit,
+      isDown,
+      system,
+      mode,
+      key,
+      isRelatedBackwards
+    )
   }
 
   def copy(): HarmonicFunctionParserBuilder = {

@@ -132,42 +132,42 @@ class HarmonicsParser extends RegexParsers {
   def degree: Parser[Int] = """[1-7]""".r ^^ { _.toInt }
 
   def degreeDef: Parser[Degree] =
-    Tokens.degree ~ Tokens.colon ~ degree ^^ { case d ~ c ~ value => ScaleDegree.fromValue(value) }
+    Tokens.degree ~ Tokens.colon ~> degree ^^ { d => ScaleDegree.fromValue(d) }
 
   def positionDef: Parser[Position] =
-    Tokens.position ~ Tokens.colon ~ chordComponent ^^ { case p ~ c ~ cc => Position(cc) }
+    Tokens.position ~ Tokens.colon ~> chordComponent ^^ { cc => Position(cc) }
 
   def revolutionDef: Parser[Revolution] =
-    Tokens.revolution ~ Tokens.colon ~ chordComponent ^^ { case r ~ c ~ cc => Revolution(cc) }
+    Tokens.revolution ~ Tokens.colon ~> chordComponent ^^ { cc => Revolution(cc) }
 
   def downDef: Parser[IsDown] =
-    Tokens.down ^^ { x => IsDown(true) }
+    Tokens.down ^^ { _ => IsDown(true) }
 
   def isRelatedBackwardsDef: Parser[IsRelatedBackwards] =
     Tokens.isRelatedBackwards ^^ { x => IsRelatedBackwards(true) }
 
   def extraDef: Parser[Extra] =
-    Tokens.extra ~ Tokens.colon ~ chordComponent ~ rep(Tokens.comma ~ chordComponent) ^^ {
-      case e ~ c ~ cc ~ rep => Extra(List(cc).appendedAll(rep.map(x => x._2)))
+    Tokens.extra ~ Tokens.colon ~> chordComponent ~ rep(Tokens.comma ~ chordComponent) ^^ {
+      case cc ~ rep => Extra(List(cc).appendedAll(rep.map(x => x._2)))
     }
 
   def omitDef: Parser[Omit] =
-    Tokens.omit ~ Tokens.colon ~ chordComponent ~ rep(Tokens.comma ~ chordComponent) ^^ {
-      case e ~ c ~ cc ~ rep => Omit(List(cc).appendedAll(rep.map(x => x._2)))
+    Tokens.omit ~ Tokens.colon ~> chordComponent ~ rep(Tokens.comma ~ chordComponent) ^^ {
+      case cc ~ rep => Omit(List(cc).appendedAll(rep.map(x => x._2)))
     }
 
   def delayDef: Parser[Delays] =
-    Tokens.delay ~ Tokens.colon ~ chordComponent ~ Tokens.dash ~ chordComponent ~ rep(
+    Tokens.delay ~ Tokens.colon ~> chordComponent ~ Tokens.dash ~ chordComponent ~ rep(
       Tokens.comma ~ chordComponent ~ Tokens.dash ~ chordComponent
     ) ^^ {
-      case e ~ c ~ cc1 ~ d ~ cc2 ~ rep =>
+      case cc1 ~ d ~ cc2 ~ rep =>
         Delays(List((cc1, cc2)).appendedAll(rep.map(x => (x._1._1._2, x._2))).map(Delay(_)))
     }
 
   def systemName: Parser[String] = Tokens.closeSystem | Tokens.openSystem ^^ { _.toString }
 
   def systemDef: Parser[System] =
-    Tokens.system ~ Tokens.colon ~ systemName ^^ { case s ~ c ~ n => ChordSystem.fromString(n) }
+    Tokens.system ~ Tokens.colon ~> systemName ^^ { n => ChordSystem.fromString(n) }
 
   def harmonicFunctionNameDef: Parser[BaseFunction] =
     (Tokens.tonicSymbol | Tokens.subdominantSymbol | Tokens.dominantSymbol) ^^ (x => FunctionNames.fromName(x))
@@ -180,18 +180,21 @@ class HarmonicsParser extends RegexParsers {
     }
 
   def harmonicFunctionContentDef: Parser[HarmonicFunctionParserBuilder] =
-    opt(harmonicFunctionContent ~ rep(Tokens.fieldsDelimiter ~ harmonicFunctionContent)) ^^ { s =>
+    opt(harmonicFunctionContent ~ rep(Tokens.fieldsDelimiter ~> harmonicFunctionContent)) ^^ { s =>
       val builder = new HarmonicFunctionParserBuilder
       s match {
         case Some(value) =>
           value match {
             case hfContent ~ rep =>
+              val contents = rep.prepended(hfContent)
+              val down     = contents.contains(IsDown(true))
+
               implicit def stringToChordComponent(x: String): ChordComponent =
-                ChordComponentManager.chordComponentFromString(x)
+                ChordComponentManager.chordComponentFromString(x, down)
               implicit def stringListToChordComponentList(xs: List[String]): List[ChordComponent] =
                 xs.map(stringToChordComponent)
 
-              rep.map(_._2).prepended(hfContent).foreach {
+              contents.foreach {
                 case s: System              => builder.withSystem(s)
                 case d: Delays              => builder.withDelay(d.value)
                 case o: Omit                => builder.withOmit(o.stringList)
@@ -229,34 +232,31 @@ class HarmonicsParser extends RegexParsers {
     }
 
   def singleDeflection: Parser[HarmonicFunctionParserBuilder] =
-    Tokens.openNormalBracket ~ harmonicFunctionClassicDef ~ Tokens.closeNormalBracket ^^ {
-      case o ~ hf ~ c =>
-        if (bracketCounter > 0) throw HarmonicsParserException("Inner deflections are forbidden")
-        setCurrentDeflection(hf.getIsRelatedBackwards)
-        hf.withType(getNextDeflection)
-        hf
+    Tokens.openNormalBracket ~> harmonicFunctionClassicDef <~ Tokens.closeNormalBracket ^^ { hf =>
+      if (bracketCounter > 0) throw HarmonicsParserException("Inner deflections are forbidden")
+      setCurrentDeflection(hf.getIsRelatedBackwards)
+      hf.withType(getNextDeflection)
+      hf
     }
 
   def startDeflection: Parser[HarmonicFunctionParserBuilder] =
-    Tokens.openNormalBracket ~ harmonicFunctionClassicDef ^^ {
-      case b ~ hf =>
-        increaseBracketCounter()
-        setCurrentDeflection(hf.getIsRelatedBackwards)
-        hf.withType(getNextDeflection)
-        hf
+    Tokens.openNormalBracket ~> harmonicFunctionClassicDef ^^ { hf =>
+      increaseBracketCounter()
+      setCurrentDeflection(hf.getIsRelatedBackwards)
+      hf.withType(getNextDeflection)
+      hf
     }
 
   def endDeflection: Parser[HarmonicFunctionParserBuilder] =
-    harmonicFunctionClassicDef ~ Tokens.closeNormalBracket ^^ {
-      case hf ~ b =>
-        decreaseBracketCounter()
-        hf.withType(currentDeflection)
-        hf
+    harmonicFunctionClassicDef <~ Tokens.closeNormalBracket ^^ { hf =>
+      decreaseBracketCounter()
+      hf.withType(currentDeflection)
+      hf
     }
 
   def ellipse: Parser[HarmonicFunctionParserBuilder] =
-    Tokens.openSquareBracket ~ harmonicFunctionClassicDef ~ Tokens.closeSquareBracket ^^ {
-      case o ~ hf ~ c if bracketCounter == 0 =>
+    Tokens.openSquareBracket ~> harmonicFunctionClassicDef <~ Tokens.closeSquareBracket ^^ {
+      case hf if bracketCounter == 0 =>
         hf.withType(Ellipse)
         hf
       case _ => throw HarmonicsParserException("Ellipse could not be inside deflection")
@@ -266,8 +266,8 @@ class HarmonicsParser extends RegexParsers {
     endDeflection | singleDeflection | startDeflection | harmonicFunctionSingle | ellipse ^^ { x => x }
 
   def measureDef: Parser[MeasureParserBuilder] =
-    rep(Tokens.newline) ~> rep1(harmonicFunctionDef) ~ separator ^^ {
-      case functions ~ separator => new MeasureParserBuilder(Some(functions))
+    rep(Tokens.newline) ~> rep1(harmonicFunctionDef) <~ separator ^^ { functions =>
+      new MeasureParserBuilder(Some(functions))
     }
 
   def measuresDef: Parser[List[MeasureParserBuilder]] =
@@ -287,7 +287,7 @@ object TestParser extends HarmonicsParser {
       harmonicsExerciseDef,
       """C
         |4/4
-        |S{delay: 4-3}""".stripMargin
+        |(S{delay: 4-3}) T{} [T{}]""".stripMargin
     ) match {
       case Success(matched, _) =>
         println(Seq(matched.measures.map(_.harmonicFunctions.length).sum.toString, matched).mkString(": "))
