@@ -19,12 +19,20 @@ lazy val rootProject = project
     version := projectV
   )
   .aggregate(
-    model
+    model,
+    algorithms
   )
 
 lazy val model = project
   .settings(
     name := "model",
+    settings,
+    libraryDependencies ++= testDependencies
+  )
+
+lazy val algorithms = project
+  .settings(
+    name := "algorithms",
     settings,
     libraryDependencies ++= testDependencies
   )
