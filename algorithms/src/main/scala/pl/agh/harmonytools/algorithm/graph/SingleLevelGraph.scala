@@ -1,23 +1,21 @@
 package pl.agh.harmonytools.algorithm.graph
 
-import pl.agh.harmonytools.algorithm.graph.node.{Layer, Node}
+import pl.agh.harmonytools.algorithm.graph.node.{Layer, Node, NodeContent}
 
-import scala.annotation.tailrec
-
-class SingleLevelGraph[T, S](
+class SingleLevelGraph[T <: NodeContent, S](
   private val layers: List[Layer[T, S]],
-  private val firstNode: Node[T],
-  private val lastNode: Node[T]
-) extends ScoreGraph[T] {
-  override protected val first: Node[T] = firstNode
-  override protected val last: Node[T]  = lastNode
+  private val firstNode: Node[T, S],
+  private val lastNode: Node[T, S]
+) extends ScoreGraph[T, S] {
+  override protected val first: Node[T, S] = firstNode
+  override protected val last: Node[T, S]  = lastNode
 
-  override def getNodes: List[Node[T]] =
+  override def getNodes: List[Node[T, S]] =
     layers.map(_.getNodeList).reduce(_ ++ _).concat(List(first, last))
 
   def getLayers: List[Layer[T, S]] = layers
 
-  def printInfoSingleNode(node: Node[T], layerId: Int): Unit =
+  def printInfoSingleNode(node: Node[T, S], layerId: Int): Unit =
     println(Seq(node.getId, node.getContent, layerId).mkString(","))
 
   final override def printEdges(): Unit = {

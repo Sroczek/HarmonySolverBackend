@@ -3,16 +3,16 @@ package pl.agh.harmonytools.algorithm.graph.builders
 import pl.agh.harmonytools.algorithm.evaluator.{Connection, ConnectionEvaluator}
 import pl.agh.harmonytools.algorithm.generator.LayerGenerator
 import pl.agh.harmonytools.algorithm.graph.SingleLevelGraph
-import pl.agh.harmonytools.algorithm.graph.node.{Layer, NeighbourNode, Node}
+import pl.agh.harmonytools.algorithm.graph.node.{Layer, NeighbourNode, Node, NodeContent}
 
-class SingleLevelGraphBuilder[T, S](firstContent: T, lastContent: T) {
+class SingleLevelGraphBuilder[T <: NodeContent, S](firstContent: T, lastContent: T) {
   private var evaluator: Option[ConnectionEvaluator[T]]            = None
   private var generator: Option[LayerGenerator[T, S]]              = None
   private var generatorInputs: Option[List[S]]                     = None
   private var connectedLayers: Option[List[Layer[T, S]]]           = None
   private var graphTemplate: Option[SingleLevelGraphBuilder[T, S]] = None
-  private var first: Option[Node[T]]                               = None
-  private var last: Option[Node[T]]                                = None
+  private var first: Option[Node[T, S]]                            = None
+  private var last: Option[Node[T, S]]                             = None
   private var layers: Option[List[Layer[T, S]]]                    = None
 
   def withEvaluator(evaluator: ConnectionEvaluator[T]): Unit = this.evaluator = Some(evaluator)
@@ -25,9 +25,9 @@ class SingleLevelGraphBuilder[T, S](firstContent: T, lastContent: T) {
 
   def withGraphTemplate(graphTemplate: SingleLevelGraphBuilder[T, S]): Unit = this.graphTemplate = Some(graphTemplate)
 
-  private def withFirst(first: Node[T]): Unit = this.first = Some(first)
+  private def withFirst(first: Node[T, S]): Unit = this.first = Some(first)
 
-  private def withLast(last: Node[T]): Unit = this.last = Some(last)
+  private def withLast(last: Node[T, S]): Unit = this.last = Some(last)
 
   private def withLayers(layers: List[Layer[T, S]]): Unit = this.layers = Some(layers)
 
@@ -45,9 +45,9 @@ class SingleLevelGraphBuilder[T, S](firstContent: T, lastContent: T) {
 
   private def getGenerator: LayerGenerator[T, S] = generator.getOrElse(sys.error("Generator not defined"))
 
-  private def getFirst: Node[T] = first.getOrElse(sys.error("First not defined"))
+  private[builders] def getFirst: Node[T, S] = first.getOrElse(sys.error("First not defined"))
 
-  private def getLast: Node[T] = last.getOrElse(sys.error("Last not defined"))
+  private[builders] def getLast: Node[T, S] = last.getOrElse(sys.error("Last not defined"))
 
   private def getConnectedLayers: List[Layer[T, S]] =
     connectedLayers.getOrElse(sys.error("ConnectedLayers not defined"))
@@ -69,14 +69,14 @@ class SingleLevelGraphBuilder[T, S](firstContent: T, lastContent: T) {
   }
 
   private def addFirstAndLast(): Unit = {
-    withFirst(new Node[T](firstContent))
+    withFirst(new Node[T, S](firstContent))
     getLayers.head.getNodeList.foreach { node =>
-      getFirst.addNextNeighbour(new NeighbourNode[T](node))
+      getFirst.addNextNeighbour(new NeighbourNode[T, S](node))
     }
 
-    withLast(new Node[T](lastContent))
+    withLast(new Node[T, S](lastContent))
     getLayers.last.getNodeList.foreach { node =>
-      node.addNextNeighbour(new NeighbourNode[T](getLast))
+      node.addNextNeighbour(new NeighbourNode[T, S](getLast))
     }
   }
 
@@ -91,16 +91,16 @@ class SingleLevelGraphBuilder[T, S](firstContent: T, lastContent: T) {
     for (layerId <- getLayers.reverse.indices) {
       for (currentNode <- getLayers(layerId).getNodeList) {
         if (currentNode.getPrevNeighbours.length > 1) {
-          var duplicates: List[Node[T]] = List.empty
+          var duplicates: List[Node[T, S]] = List.empty
           for (prevNeighbour <- currentNode.getPrevNeighbours)
             duplicates = duplicates :+ currentNode.duplicate()
           currentNode.removeLeftConnections()
 
           val prevNeighbours = currentNode.getPrevNeighbours
 
-          prevNeighbours.head.node.addNextNeighbour(new NeighbourNode[T](currentNode))
+          prevNeighbours.head.node.addNextNeighbour(new NeighbourNode[T, S](currentNode))
           for (i <- 1 to duplicates.length) {
-            prevNeighbours(i).node.addNextNeighbour(new NeighbourNode[T](duplicates(i - 1)))
+            prevNeighbours(i).node.addNextNeighbour(new NeighbourNode[T, S](duplicates(i - 1)))
             getLayers(layerId).addNode(duplicates(i - 1))
           }
         }

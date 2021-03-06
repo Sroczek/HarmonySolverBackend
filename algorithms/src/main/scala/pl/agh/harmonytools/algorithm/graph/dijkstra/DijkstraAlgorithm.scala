@@ -1,24 +1,24 @@
 package pl.agh.harmonytools.algorithm.graph.dijkstra
 
 import pl.agh.harmonytools.algorithm.graph.ScoreGraph
-import pl.agh.harmonytools.algorithm.graph.node.Node
+import pl.agh.harmonytools.algorithm.graph.node.{Node, NodeContent}
 
 import scala.collection.mutable
 
-case class DijkstraAlgorithm[T](graph: ScoreGraph[T]) {
+case class DijkstraAlgorithm[T <: NodeContent, S](graph: ScoreGraph[T, S]) {
 
   private def isInfinity(x: Int): Boolean = x == Int.MaxValue
 
   private implicit def nodesOrdering[A <: DijkstraNode]: Ordering[A] = Ordering.by(_.getDistanceFromBeginning)
 
-  private val queue = new DijkstraPriorityQueue[Node[T]]
+  private val queue = new DijkstraPriorityQueue[Node[T, S]]
 
   private def init(): Unit = {
     graph.getNodes.foreach(queue.enqueue)
     graph.getFirst.setDistanceFromBeginning(0)
   }
 
-  private def relax(u: Node[T], v: Node[T], w: Int): Unit = {
+  private def relax(u: Node[T, S], v: Node[T, S], w: Int): Unit = {
     if (isInfinity(u.getDistanceFromBeginning))
       throw new InternalError("u cannot have infinity distance from beginning")
     if (u.getDistanceFromBeginning + w < v.getDistanceFromBeginning || isInfinity(v.getDistanceFromBeginning)) {
@@ -40,10 +40,10 @@ case class DijkstraAlgorithm[T](graph: ScoreGraph[T]) {
     }
   }
 
-  def getShortestPathToLastNode: List[Node[T]] = {
+  def getShortestPathToLastNode: List[Node[T, S]] = {
     findShortestPaths()
-    var currentNode           = graph.getLast
-    var result: List[Node[T]] = List.empty
+    var currentNode              = graph.getLast
+    var result: List[Node[T, S]] = List.empty
     while (currentNode.getPrevsInShortestPath.nonEmpty) {
       result = result.appended(currentNode)
       currentNode = currentNode.getPrevsInShortestPath.head

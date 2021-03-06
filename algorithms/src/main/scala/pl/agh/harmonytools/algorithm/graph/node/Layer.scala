@@ -3,17 +3,17 @@ package pl.agh.harmonytools.algorithm.graph.node
 import pl.agh.harmonytools.algorithm.evaluator.{Connection, ConnectionEvaluator}
 import pl.agh.harmonytools.algorithm.generator.LayerGenerator
 
-class Layer[T, S](private var nodeList: List[Node[T]]) {
+class Layer[T <: NodeContent, S](private var nodeList: List[Node[T, S]]) {
 
   def this(generatorInput: S, generator: LayerGenerator[T, S]) = {
-    this(generator.generate(generatorInput).map(new Node[T](_)))
+    this(generator.generate(generatorInput).map(new Node[T, S](_)))
   }
 
-  def addNode(node: Node[T]): Unit = nodeList = nodeList :+ node
+  def addNode(node: Node[T, S]): Unit = nodeList = nodeList :+ node
 
-  def getNodeList: List[Node[T]] = nodeList
+  def getNodeList: List[Node[T, S]] = nodeList
 
-  def removeNode(node: Node[T]): Unit = {
+  def removeNode(node: Node[T, S]): Unit = {
     nodeList = nodeList.filter(_ != node)
     node.removeConnections()
   }
@@ -62,7 +62,7 @@ class Layer[T, S](private var nodeList: List[Node[T]]) {
     }
   }
 
-  def map(f: Node[T] => Node[T]): Unit =
+  def map(f: Node[T, S] => Node[T, S]): Unit =
     nodeList = nodeList.map(f(_))
 
   def isEmpty: Boolean =

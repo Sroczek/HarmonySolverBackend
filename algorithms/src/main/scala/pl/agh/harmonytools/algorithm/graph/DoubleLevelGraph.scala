@@ -1,24 +1,15 @@
 package pl.agh.harmonytools.algorithm.graph
-import pl.agh.harmonytools.algorithm.graph.node.{
-  DoubleLevelLayer,
-  Layer,
-  NeighbourNode,
-  NeighbourNodes,
-  Node,
-  NodeWithNestedLayer
-}
+import pl.agh.harmonytools.algorithm.graph.node.{Layer, NeighbourNode, NeighbourNodes, Node, NodeContent}
 
-class DoubleLevelGraph[T, S](
-  private val firstNode: Node[T],
-  private val lastNode: Node[T],
-  private var doubleLevelLayers: List[DoubleLevelLayer[T, S]],
-  private val nestedFirst: NodeWithNestedLayer[T, S],
-  private val nestedLast: NodeWithNestedLayer[T, S]
-) extends ScoreGraph[T] {
-  final override protected val first: NodeWithNestedLayer[T, S] = nestedFirst
-  final override protected val last: NodeWithNestedLayer[T, S]  = nestedLast
+class DoubleLevelGraph[T <: NodeContent, S](
+  private var doubleLevelLayers: List[Layer[T, S]],
+  private val nestedFirst: Node[T, S],
+  private val nestedLast: Node[T, S]
+) extends ScoreGraph[T, S] {
+  final override protected val first: Node[T, S] = nestedFirst
+  final override protected val last: Node[T, S]  = nestedLast
 
-  final override def getNodes: List[Node[T]] =
+  final override def getNodes: List[Node[T, S]] =
     doubleLevelLayers
       .map(_.getNodeList.map(_.getNestedLayer.getNodeList).reduce(_ ++ _))
       .reduce(_ ++ _)
@@ -29,11 +20,11 @@ class DoubleLevelGraph[T, S](
       throw new InternalError("Shortest paths are not calculated properly: " + getNodes.length)
 
     var layers: List[Layer[T, S]] = List.empty
-    var stack: List[Node[T]]      = List(getLast)
+    var stack: List[Node[T, S]]   = List(getLast)
 
     while (stack.length != 1 || stack.head == getFirst) {
-      var edges: List[(Node[T], Node[T])] = List.empty
-      var newStack: List[Node[T]]         = List.empty
+      var edges: List[(Node[T, S], Node[T, S])] = List.empty
+      var newStack: List[Node[T, S]]            = List.empty
       for (currentNode <- stack) {
         for (prevNode <- currentNode.getPrevsInShortestPath) {
           edges = edges :+ (prevNode, currentNode)
@@ -54,16 +45,15 @@ class DoubleLevelGraph[T, S](
     new SingleLevelGraph[T, S](layers, getFirst, getLast)
   }
 
-  def printInfoSingleNode(node: Node[T], neighbourNode: NeighbourNode[T], layerId: Int): Unit =
+  def printInfoSingleNode(node: Node[T, S], neighbourNode: NeighbourNode[T, S], layerId: Int): Unit =
     println(Seq(node.getId, neighbourNode.node.getId, layerId + 1, neighbourNode.weight).mkString(","))
 
   final override def printEdges(): Unit = {
     for (layerId <- doubleLevelLayers.indices) {
       for (layerNode <- doubleLevelLayers(layerId).getNodeList) {
-        for (currentNode <- layerNode.getNestedLayer.getNodeList) {
+        for (currentNode <- layerNode.getNestedLayer.getNodeList)
           for (neighbour <- currentNode.getNextNeighbours)
             printInfoSingleNode(currentNode, neighbour, layerId + 1)
-        }
       }
     }
 
