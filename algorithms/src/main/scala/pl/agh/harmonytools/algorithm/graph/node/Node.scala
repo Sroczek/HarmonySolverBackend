@@ -13,9 +13,9 @@ class Node[T <: NodeContent, S](
   final def getId: Option[Int]      = id
 
   private var nestedLayer: Option[Layer[T, S]] = None
-  def setNestedLayer(l: Layer[T, S]): Unit     = nestedLayer = Some(l)
-  def getNestedLayer: Layer[T, S]              = nestedLayer.getOrElse(sys.error("Nested layer not defined"))
-  def hasNestedLayer: Boolean                  = nestedLayer.isDefined
+//  def setNestedLayer(l: Layer[T, S]): Unit     = nestedLayer = Some(l)
+//  def getNestedLayer: Layer[T, S]              = nestedLayer.getOrElse(sys.error("Nested layer not defined"))
+//  def hasNestedLayer: Boolean                  = nestedLayer.isDefined
 
   final def getPrevContentIfSingle: T =
     getUniquePrevContents.headOption

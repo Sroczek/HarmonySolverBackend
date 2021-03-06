@@ -3,7 +3,14 @@ package pl.agh.harmonytools.algorithm.graph.builders
 import pl.agh.harmonytools.algorithm.evaluator.{Connection, ConnectionEvaluator}
 import pl.agh.harmonytools.algorithm.generator.LayerGenerator
 import pl.agh.harmonytools.algorithm.graph.SingleLevelGraph
-import pl.agh.harmonytools.algorithm.graph.node.{Layer, NeighbourNode, Node, NodeContent}
+import pl.agh.harmonytools.algorithm.graph.node.{
+  DoubleLevelLayer,
+  Layer,
+  NeighbourNode,
+  Node,
+  NodeContent,
+  NodeWithNestedLayer
+}
 
 class SingleLevelGraphBuilder[T <: NodeContent, S](firstContent: T, lastContent: T) {
   private var evaluator: Option[ConnectionEvaluator[T]]            = None
@@ -11,9 +18,9 @@ class SingleLevelGraphBuilder[T <: NodeContent, S](firstContent: T, lastContent:
   private var generatorInputs: Option[List[S]]                     = None
   private var connectedLayers: Option[List[Layer[T, S]]]           = None
   private var graphTemplate: Option[SingleLevelGraphBuilder[T, S]] = None
-  private var first: Option[Node[T, S]]                            = None
-  private var last: Option[Node[T, S]]                             = None
-  private var layers: Option[List[Layer[T, S]]]                    = None
+  protected var first: Option[Node[T, S]]                          = None
+  protected var last: Option[Node[T, S]]                           = None
+  protected var layers: Option[List[Layer[T, S]]]                  = None
 
   def withEvaluator(evaluator: ConnectionEvaluator[T]): Unit = this.evaluator = Some(evaluator)
 
@@ -31,9 +38,9 @@ class SingleLevelGraphBuilder[T <: NodeContent, S](firstContent: T, lastContent:
 
   private def withLayers(layers: List[Layer[T, S]]): Unit = this.layers = Some(layers)
 
-  private[builders] def getLayers: List[Layer[T, S]] = layers.getOrElse(sys.error("Connected layers not defined"))
+  protected[builders] def getLayers: List[Layer[T, S]] = layers.getOrElse(sys.error("Connected layers not defined"))
 
-  private def pushLayer(layer: Layer[T, S]*): Unit =
+  protected def pushLayer(layer: Layer[T, S]*): Unit =
     layers match {
       case Some(layerList) => withLayers(layerList ++ layer)
       case None            => sys.error("Connected layers not defined")
@@ -41,9 +48,9 @@ class SingleLevelGraphBuilder[T <: NodeContent, S](firstContent: T, lastContent:
 
   private def getEvaluator: ConnectionEvaluator[T] = evaluator.getOrElse(sys.error("Evaluator not defined"))
 
-  private def getInputs: List[S] = generatorInputs.getOrElse(sys.error("Inputs not defined"))
+  protected def getInputs: List[S] = generatorInputs.getOrElse(sys.error("Inputs not defined"))
 
-  private def getGenerator: LayerGenerator[T, S] = generator.getOrElse(sys.error("Generator not defined"))
+  protected def getGenerator: LayerGenerator[T, S] = generator.getOrElse(sys.error("Generator not defined"))
 
   private[builders] def getFirst: Node[T, S] = first.getOrElse(sys.error("First not defined"))
 
@@ -59,7 +66,7 @@ class SingleLevelGraphBuilder[T <: NodeContent, S](firstContent: T, lastContent:
     for (layerId <- getLayers.dropRight(1).indices)
       getLayers(layerId).leaveOnlyNodesTo(getLayers(layerId + 1))
 
-  private def generateLayers(): Unit =
+  protected def generateLayers(): Unit =
     getInputs.foreach(input => pushLayer(new Layer[T, S](input, getGenerator)))
 
   private def addEdges(): Unit = {
@@ -155,4 +162,17 @@ class SingleLevelGraphBuilder[T <: NodeContent, S](firstContent: T, lastContent:
   private def getResultGraph: SingleLevelGraph[T, S] =
     new SingleLevelGraph[T, S](getLayers, getFirst, getLast)
 
+}
+
+class NestedSingleLevelGraphBuilder[T <: NodeContent, S](firstContent: T, lastContent: T)
+  extends SingleLevelGraphBuilder[T, S](firstContent, lastContent) {
+  override protected def generateLayers(): Unit =
+    getInputs.foreach(input => pushLayer(new DoubleLevelLayer[T, S](input, getGenerator)))
+
+  override protected var layers: Option[List[DoubleLevelLayer[T, S]]] = None
+  override protected var first: Option[NodeWithNestedLayer[T, S]]     = None
+  override protected var last: Option[NodeWithNestedLayer[T, S]]      = None
+
+  override protected[builders] def getLayers: List[DoubleLevelLayer[T, S]] =
+    layers.getOrElse(sys.error("Layers not defined"))
 }

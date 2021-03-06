@@ -1,13 +1,23 @@
 package pl.agh.harmonytools.algorithm.graph
-import pl.agh.harmonytools.algorithm.graph.node.{Layer, NeighbourNode, NeighbourNodes, Node, NodeContent}
+import pl.agh.harmonytools.algorithm.graph.node.{
+  DoubleLevelLayer,
+  Layer,
+  NeighbourNode,
+  NeighbourNodes,
+  Node,
+  NodeContent,
+  NodeWithNestedLayer
+}
 
 class DoubleLevelGraph[T <: NodeContent, S](
-  private var doubleLevelLayers: List[Layer[T, S]],
+  private val firstNode: Node[T, S],
+  private val lastNode: Node[T, S],
+  private var doubleLevelLayers: List[DoubleLevelLayer[T, S]],
   private val nestedFirst: Node[T, S],
   private val nestedLast: Node[T, S]
 ) extends ScoreGraph[T, S] {
-  final override protected val first: Node[T, S] = nestedFirst
-  final override protected val last: Node[T, S]  = nestedLast
+  final override protected val first: Node[T, S] = firstNode
+  final override protected val last: Node[T, S]  = lastNode
 
   final override def getNodes: List[Node[T, S]] =
     doubleLevelLayers

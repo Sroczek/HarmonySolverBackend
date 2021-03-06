@@ -1,6 +1,8 @@
 package pl.agh.harmonytools.algorithm.evaluator
 
-trait ConnectionEvaluator[T] {
+import pl.agh.harmonytools.algorithm.graph.node.NodeContent
+
+trait ConnectionEvaluator[T <: NodeContent] {
   protected val connectionSize: Int
   protected val softRules: List[IRule[T]]
   protected val hardRules: List[IRule[T]]
