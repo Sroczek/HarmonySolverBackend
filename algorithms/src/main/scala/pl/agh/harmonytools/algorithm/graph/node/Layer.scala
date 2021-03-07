@@ -1,19 +1,14 @@
 package pl.agh.harmonytools.algorithm.graph.node
 
 import pl.agh.harmonytools.algorithm.evaluator.{Connection, ConnectionEvaluator}
-import pl.agh.harmonytools.algorithm.generator.LayerGenerator
 
-class Layer[T <: NodeContent, S](private var nodeList: List[Node[T, S]]) {
+class Layer[T <: NodeContent](private var nodeList: List[Node[T]]) {
 
-  def this(generatorInput: S, generator: LayerGenerator[T, S]) = {
-    this(generator.generate(generatorInput).map(new Node[T, S](_)))
-  }
+  def addNode(node: Node[T]): Unit = nodeList = nodeList :+ node
 
-  def addNode(node: Node[T, S]): Unit = nodeList = nodeList :+ node
+  def getNodeList: List[Node[T]] = nodeList
 
-  def getNodeList: List[Node[T, S]] = nodeList
-
-  def removeNode(node: Node[T, S]): Unit = {
+  def removeNode(node: Node[T]): Unit = {
     nodeList = nodeList.filter(_ != node)
     node.removeConnections()
   }
@@ -25,7 +20,7 @@ class Layer[T <: NodeContent, S](private var nodeList: List[Node[T, S]]) {
     nodeList.map(_.getNextNeighbours.size).sum
 
   def connectWith(
-    other: Layer[T, S],
+    other: Layer[T],
     evaluator: ConnectionEvaluator[T],
     isFirstLayer: Boolean,
     removeUnreachable: Boolean
@@ -41,7 +36,7 @@ class Layer[T <: NodeContent, S](private var nodeList: List[Node[T, S]]) {
     if (removeUnreachable) other.removeUnreachableNodes()
   }
 
-  def leaveOnlyNodesTo(other: Layer[T, S]): Unit = {
+  def leaveOnlyNodesTo(other: Layer[T]): Unit = {
     nodeList.foreach { currentNode =>
       currentNode.getNextNeighbours.foreach { currentNeighbour =>
         if (other.getNodeList.contains(currentNeighbour))
@@ -62,7 +57,7 @@ class Layer[T <: NodeContent, S](private var nodeList: List[Node[T, S]]) {
     }
   }
 
-  def map(f: Node[T, S] => Node[T, S]): Unit =
+  def map(f: Node[T] => Node[T]): Unit =
     nodeList = nodeList.map(f(_))
 
   def isEmpty: Boolean =

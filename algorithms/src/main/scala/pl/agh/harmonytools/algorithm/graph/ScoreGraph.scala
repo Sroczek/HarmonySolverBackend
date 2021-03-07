@@ -1,18 +1,19 @@
 package pl.agh.harmonytools.algorithm.graph
 
+import pl.agh.harmonytools.algorithm.graph.dijkstra.DijkstraNode
 import pl.agh.harmonytools.algorithm.graph.node.{Node, NodeContent}
 
 import scala.annotation.tailrec
 
-trait ScoreGraph[T <: NodeContent, S] {
-  protected val first: Node[T, S]
-  protected val last: Node[T, S]
+trait ScoreGraph[T <: NodeContent] {
+  protected val first: Node[T]
+  protected val last: Node[T]
 
-  final def getFirst: Node[T, S] = first
+  def getFirst: Node[T] = first
 
-  final def getLast: Node[T, S] = last
+  def getLast: Node[T] = last
 
-  def getNodes: List[Node[T, S]]
+  def getNodes: List[Node[T]]
 
   def printEdges(): Unit
 
@@ -22,7 +23,7 @@ trait ScoreGraph[T <: NodeContent, S] {
     var currentId = 0
 
     @tailrec
-    def enumerateGivenNodes(nodes: List[Node[T, S]]): Unit = {
+    def enumerateGivenNodes(nodes: List[Node[T]]): Unit = {
       nodes match {
         case head :: tail =>
           head.setId(currentId)
