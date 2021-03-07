@@ -2,14 +2,14 @@ package pl.agh.harmonytools.algorithm.graph.builder
 
 import org.scalatest.{FunSuite, Matchers}
 import pl.agh.harmonytools.algorithm.evaluator.{Connection, ConnectionEvaluator, IRule}
-import pl.agh.harmonytools.algorithm.generator.LayerGenerator
+import pl.agh.harmonytools.algorithm.generator.{GeneratorInput, LayerGenerator}
 import pl.agh.harmonytools.algorithm.graph.builders.SingleLevelGraphBuilder
 import pl.agh.harmonytools.algorithm.graph.node.NodeContent
 
 class SingleLevelGraphBuilderTest extends FunSuite with Matchers {
-  object MockGenerator extends LayerGenerator[Content, Int] {
-    override def generate(input: Int): List[Content] =
-      (0 to input).map(Content).toList
+  object MockGenerator extends LayerGenerator[Content, GenInput] {
+    override def generate(input: GenInput): List[Content] =
+      (0 to input.value).map(Content).toList
   }
 
   object MockEvaluator extends ConnectionEvaluator[Content] {
@@ -27,13 +27,15 @@ class SingleLevelGraphBuilderTest extends FunSuite with Matchers {
     override def isRelatedTo(other: NodeContent): Boolean = ???
   }
 
+  case class GenInput(value: Int) extends GeneratorInput
+
   test("Building test") {
     val firstContent = Content(-1)
     val lastContent  = Content(-2)
-    val graphBuilder = new SingleLevelGraphBuilder[Content, Int](firstContent, lastContent)
+    val graphBuilder = new SingleLevelGraphBuilder[Content, GenInput](firstContent, lastContent)
     graphBuilder.withGenerator(MockGenerator)
     graphBuilder.withEvaluator(MockEvaluator)
-    graphBuilder.withGeneratorInput(List(1, 2, 3))
+    graphBuilder.withGeneratorInput(List(1, 2, 3).map(GenInput))
     val graph = graphBuilder.build()
     graph.printEdges()
     graph.getLayers.size shouldBe 3

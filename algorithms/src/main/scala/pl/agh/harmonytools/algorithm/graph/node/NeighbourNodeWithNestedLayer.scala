@@ -1,6 +1,6 @@
 package pl.agh.harmonytools.algorithm.graph.node
 
-class NeighbourNodeWithNestedLayer[T <: NodeContent, S](
+class NeighbourNodeWithNestedLayer[T <: NodeContent, S <: NodeContent](
   override val node: NodeWithNestedLayer[T, S],
-  override var weight: Int = 0
-) extends NeighbourNode[T, S](node)
+  weight: Int = 0
+) extends NeighbourNode[T](node, weight)
