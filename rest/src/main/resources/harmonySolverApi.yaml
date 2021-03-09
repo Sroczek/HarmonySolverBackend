@@ -1,0 +1,138 @@
+openapi: 3.0.1
+info:
+  title: Swagger Petstore
+  description: 'This is a sample server Petstore server.  You can find out more about     Swagger
+    at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For
+    this sample, you can use the api key `special-key` to test the authorization     filters.'
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://petstore.swagger.io/v2
+  - url: http://petstore.swagger.io/v2
+tags:
+  - name: pet
+    description: Everything about your Pets
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+  - name: store
+    description: Access to Petstore orders
+  - name: user
+    description: Operations about user
+    externalDocs:
+      description: Find out more about our store
+      url: http://swagger.io
+
+paths:
+  /harmonics:
+    post:
+      # tags:
+      # - hf
+      summary: Post new harmonic functions exercise
+      operationId: createHarmonicFunctionsExercise
+      requestBody:
+        description: Exercixe object that needs to be send
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HarmonicsExerciseDto'
+        required: true
+      responses:
+        200:
+          description: OK
+          content: {}
+
+components:
+  schemas:
+    HarmonicsExerciseDto:
+      type: object
+      properties:
+        # nie wiem czy mode nie jest redundatny w tym przypadku - wielkość litery w kluczu mogłaby implikować mode właśnie np. 'C#' => major, 'c#' => minor
+        mode:
+          type: string
+          description: Mode of exercise, should be one of 'major' or 'minor'
+          enum:
+            - major
+            - minor
+        key:
+          type: string
+          description: Key in which exercise should be solved, f.e. 'C#'
+        meter:
+          type: string
+          description: Meter of solution in format <nominator>/<denominator> f.e. '3/4', '6/8'
+        measures:
+          type: array
+          items:
+            $ref: '#/components/schemas/HarmonicFunctionDto'
+
+    HarmonicFunctionDto:
+      type: object
+      properties:
+        functionName:
+          type: string
+          description: Name of harmnic function, should be one of 'T', 'S', 'D'. If not defined could be inferred basing on degree.
+          enum:
+            - T
+            - S
+            - D
+        degree:
+          type: string
+          description: Degree of harmonic function, should be one of 'I', 'II', 'III' ... 'VII'. If not defined would be inferred basing on functionName.
+          enum:
+            - I
+            - II
+            - III
+            - IV
+            - V
+            - VI
+            - VII
+        position:
+          type: string
+          description: Position of harmonic function, should be string consists of number and additional characters '>' or '<' representing interval
+        revolution:
+          type: string
+          description: Revolution of harmonic function, should be string consists of number and additional characters '>' or '<' representing interval
+        delays:
+          type: array
+          description: List of delays
+          items:
+            $ref: '#/components/schemas/Delay'
+        extra:
+          type: array
+          description: List of extra elements of chord. Each chord component, should be string consists of number and additional characters '>' or '<' representing interval
+          items:
+            type: string
+        omit:
+          type: string
+          description: Omit element of chord, should be string consists of number and additional characters '>' or '<' representing interval.
+        isDown:
+          type: boolean
+          description: Indicates if harmonic function is down or not.
+        system:
+          type: string
+          description: Indicates structure of notes in chord representing harmonic function. Possible values are 'open', 'close' or 'undefined' (default).
+          default: undefined
+          enum:
+            - open
+            - close
+            - undefined
+        mode:
+          type: string
+          description: Mode of harmonic function. If not defined set to 'major'.
+          default: 'major'
+          enum:
+            - major
+            - minor
+        key:
+          type: string
+          description: Key of harmonic function f.e. 'C#'. If not defined, exercise key would be used.
+    Delay:
+      type: object

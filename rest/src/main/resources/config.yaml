@@ -1,0 +1,3 @@
+apiPackage: "pl.agh.harmonytools.rest.api"
+modelPackage: "pl.agh.harmonytools.rest.dto"
+skipStubs: "true"
