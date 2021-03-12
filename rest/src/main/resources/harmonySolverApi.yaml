@@ -1,74 +1,98 @@
 openapi: 3.0.1
 info:
-  title: Swagger Petstore
-  description: 'This is a sample server Petstore server.  You can find out more about     Swagger
-    at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For
-    this sample, you can use the api key `special-key` to test the authorization     filters.'
-  termsOfService: http://swagger.io/terms/
-  contact:
-    email: apiteam@swagger.io
+  title: Harmony Solver API
+  description: 'Main api providing core functionalities of HarmonySolver'
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
-externalDocs:
-  description: Find out more about Swagger
-  url: http://swagger.io
 servers:
-  - url: https://petstore.swagger.io/v2
-  - url: http://petstore.swagger.io/v2
-tags:
-  - name: pet
-    description: Everything about your Pets
-    externalDocs:
-      description: Find out more
-      url: http://swagger.io
-  - name: store
-    description: Access to Petstore orders
-  - name: user
-    description: Operations about user
-    externalDocs:
-      description: Find out more about our store
-      url: http://swagger.io
+  - url: https://localhost:9000/harmonytools
 
 paths:
   /harmonics:
     post:
-      # tags:
-      # - hf
       summary: Post new harmonic functions exercise
-      operationId: createHarmonicFunctionsExercise
+      operationId: solveHarmonicFunctionsExercise
       requestBody:
         description: Exercixe object that needs to be send
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/HarmonicsExerciseDto'
-        required: true
       responses:
         200:
           description: OK
           content: {}
 
+  /bass:
+    post:
+      summary: Post new bass exercise
+      operationId: solveBassExercise
+      requestBody:
+        description: Exercixe object that needs to be send
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BassExerciseDto'
+      responses:
+        200:
+          description: OK
+          content: {}
+
+  /soprano:
+    post:
+      summary: Post new soprano exercise
+      operationId: solveSopranoExercise
+      requestBody:
+        description: Exercixe object that needs to be send
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SopranoExerciseDto'
+      responses:
+        200:
+          description: OK
+          content: {}
+
+  /parser:
+    post:
+      summary: Post new harmonics exercise
+      operationId: parseHarmonicsExercise
+      requestBody:
+        description: Exercixe object that needs to be send
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HLNotationHarmonicsExerciseDto'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HarmonicsExerciseDto'
+
 components:
   schemas:
+    #HARMONICS
     HarmonicsExerciseDto:
       type: object
       properties:
-        # nie wiem czy mode nie jest redundatny w tym przypadku - wielkość litery w kluczu mogłaby implikować mode właśnie np. 'C#' => major, 'c#' => minor
-        mode:
-          type: string
-          description: Mode of exercise, should be one of 'major' or 'minor'
-          enum:
-            - major
-            - minor
         key:
           type: string
-          description: Key in which exercise should be solved, f.e. 'C#'
+          description: Key in which exercise should be solved, f.e. 'C#'. Moreover assume that 'C#' has major mode and 'c#' has minor mode.
         meter:
           type: string
           description: Meter of solution in format <nominator>/<denominator> f.e. '3/4', '6/8'
         measures:
+          type: array
+          items:
+            $ref: '#/components/schemas/HarmonicsMeasureDto'
+
+    HarmonicsMeasureDto:
+      properties:
+        elements:
           type: array
           items:
             $ref: '#/components/schemas/HarmonicFunctionDto'
@@ -104,7 +128,7 @@ components:
           type: array
           description: List of delays
           items:
-            $ref: '#/components/schemas/Delay'
+            $ref: '#/components/schemas/DelayDto'
         extra:
           type: array
           description: List of extra elements of chord. Each chord component, should be string consists of number and additional characters '>' or '<' representing interval
@@ -134,5 +158,105 @@ components:
         key:
           type: string
           description: Key of harmonic function f.e. 'C#'. If not defined, exercise key would be used.
-    Delay:
+
+    DelayDto:
       type: object
+      properties:
+        first:
+          type: string
+          description: First element of delay. Should be string consists of number and additional characters '>' or '<' representing interval
+        second:
+          type: string
+          description: Second element of delay. Should be string consists of number and additional characters '>' or '<' representing interval
+
+    #BASS
+    BassExerciseDto:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Key in which exercise should be solved, f.e. 'C#'. Moreover assume that 'C#' has major mode and 'c#' has minor mode.
+        meter:
+          type: string
+          description: Meter of solution in format <nominator>/<denominator> f.e. '3/4', '6/8'
+        measures:
+          type: array
+          items:
+            $ref: '#/components/schemas/BassMeasureDto'
+
+    BassMeasureDto:
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/BassElementDto'
+
+    BassElementDto:
+      properties:
+        note:
+          $ref: '#/components/schemas/NoteDto'
+        symbols:
+          type: array
+          description: Ordered bass symbol list. Each bass symbol should be string.
+          items:
+            type: string
+
+    #SOPRANO
+    SopranoExerciseDto:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Key in which exercise should be solved, f.e. 'C#'. Moreover assume that 'C#' has major mode and 'c#' has minor mode.
+        meter:
+          type: string
+          description: Meter of solution in format <nominator>/<denominator> f.e. '3/4', '6/8'
+        measures:
+          type: array
+          items:
+            $ref: '#/components/schemas/SopranoMeasureDto'
+        harmonicFunctions:
+          type: array
+          description: List of possible harmonic functions which could be used in solution.
+          items:
+            $ref: '#/components/schemas/HarmonicFunctionDto'
+
+    SopranoMeasureDto:
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/NoteDto'
+
+    #PARSER
+    HLNotationHarmonicsExerciseDto:
+      type: object
+      properties:
+        version:
+          type: string
+          description: Version of used notation
+        exercise:
+          type: string
+          description: HarmonicsExercise written in specific notation that should be parsed.
+
+    #COMMONS
+    NoteDto:
+      type: object
+      properties:
+        pitch:
+          type: integer
+          description: Pitch of note
+        baseNote:
+          type: string
+          description: TODO
+          enum:
+            - C
+            - D
+            - E
+            - F
+            - G
+            - A
+            - B
+        duration:
+          type: number
+          description: Duration of note. Full note has duration equal 1

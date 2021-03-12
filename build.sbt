@@ -37,6 +37,7 @@ lazy val rest = project
   .enablePlugins(OpenApiGeneratorPlugin)
   .enablePlugins(PlayScala)
   .settings(
+    Compile / unmanagedSourceDirectories += baseDirectory.value / "src/main/scala",
     openApiGeneratorName := "scala-play-server",
     openApiInputSpec := file("rest/src/main/resources/harmonySolverApi.yaml").getPath,
     openApiConfigFile := file("rest/src/main/resources/config.yaml").getPath,
