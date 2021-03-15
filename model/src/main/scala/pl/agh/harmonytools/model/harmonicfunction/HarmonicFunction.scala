@@ -26,6 +26,8 @@ case class HarmonicFunction(
   override protected def getExtra: List[ChordComponent] = extra
   override protected def getOmit: List[ChordComponent]  = omit
   override protected def getDelay: List[Delay]          = delay
+  override protected def getKey: Option[Key] = key
+  override protected def getBaseFunction: FunctionNames.BaseFunction = baseFunction
 }
 
 object HarmonicFunction {

@@ -1,7 +1,6 @@
 package pl.agh.harmonytools.harmonics.parser.builders
 
-import pl.agh.harmonytools.harmonics.exercise.{HarmonicsExercise, Meter}
-import pl.agh.harmonytools.harmonics.exercise
+import pl.agh.harmonytools.exercise.harmonics.{HarmonicsExercise, Meter}
 import pl.agh.harmonytools.harmonics.parser.DeflectionsHandler
 import pl.agh.harmonytools.model.key.Key
 
@@ -23,7 +22,7 @@ class HarmonicsExerciseParserBuilder(
 
     DeflectionsHandler.handle(exMeasures.flatMap(_.getHarmonicFunctions))
 
-    exercise.HarmonicsExercise(
+    HarmonicsExercise(
       exKey,
       exMeter,
       exMeasures.map(_.getMeasure)

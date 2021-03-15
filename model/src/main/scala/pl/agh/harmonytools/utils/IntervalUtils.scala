@@ -9,8 +9,8 @@ import pl.agh.harmonytools.utils.Extensions.ExtendedInt
 object IntervalUtils {
   def getThirdMode(key: Key, degree: Degree): BaseMode = {
     val pitches = key.mode match {
-      case Mode.MAJOR => MajorScale(key).pitches
-      case Mode.MINOR => MinorScale(key).pitches
+      case Mode.MAJOR => MajorScale.pitches
+      case Mode.MINOR => MinorScale.pitches
     }
     val baseValue = degree.root - 1
     val difference = Math.abs(pitches((baseValue + 2) %% 7) - pitches(baseValue))

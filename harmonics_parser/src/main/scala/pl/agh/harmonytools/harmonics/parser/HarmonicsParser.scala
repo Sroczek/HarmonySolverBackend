@@ -13,7 +13,7 @@ import pl.agh.harmonytools.harmonics.parser.builders.{
 }
 import pl.agh.harmonytools.model.chord.ChordSystem.System
 import pl.agh.harmonytools.model.harmonicfunction.FunctionNames._
-import pl.agh.harmonytools.harmonics.exercise.{HarmonicsExercise, Meter}
+import pl.agh.harmonytools.exercise.harmonics.{HarmonicsExercise, Meter}
 import pl.agh.harmonytools.model.key.Mode.BaseMode
 import pl.agh.harmonytools.model.scale.ScaleDegree.Degree
 import pl.agh.harmonytools.model.chord.{ChordComponent, ChordSystem}

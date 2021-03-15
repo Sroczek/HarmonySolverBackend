@@ -20,7 +20,8 @@ lazy val rootProject = project
   )
   .aggregate(
     model,
-    harmonics_parser
+    harmonics_parser,
+    bass_translator
   )
 
 lazy val model = project
@@ -37,3 +38,11 @@ lazy val harmonics_parser = project
     libraryDependencies ++= testDependencies ++ Seq("org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2")
   )
   .dependsOn(model)
+
+lazy val bass_translator = project
+  .settings(
+    name := "bass_translator",
+    settings,
+    libraryDependencies ++= testDependencies
+  )
+  .dependsOn(model, harmonics_parser)

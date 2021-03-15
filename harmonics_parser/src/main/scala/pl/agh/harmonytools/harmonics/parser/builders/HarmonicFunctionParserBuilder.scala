@@ -26,9 +26,7 @@ class HarmonicFunctionParserBuilder extends HarmonicFunctionBuilder {
   def withType(t: HarmonicsElementType): Unit            = hfType = t
 
   def getIsRelatedBackwards: Boolean      = isRelatedBackwards
-  def getKey: Option[Key]                 = key
   def getType: HarmonicsElementType       = hfType
-  def getPosition: Option[ChordComponent] = position
   def getRevolution: ChordComponent       = revolution
 
   override def preprocessHarmonicFunction(): HarmonicFunction = {

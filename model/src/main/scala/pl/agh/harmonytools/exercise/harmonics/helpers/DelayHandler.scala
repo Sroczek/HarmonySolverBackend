@@ -1,4 +1,4 @@
-package pl.agh.harmonytools.harmonics.exercise.helpers
+package pl.agh.harmonytools.exercise.harmonics.helpers
 
 import pl.agh.harmonytools.model.harmonicfunction.HarmonicFunction
 

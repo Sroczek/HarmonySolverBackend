@@ -27,11 +27,14 @@ abstract class HarmonicFunctionBuilder(withValidation: Boolean = true) extends B
       case Some(value) => value
       case None        => baseFunction.getOrElse(sys.error("Base Function undefined")).baseDegree
     }
-  override def getIsDown: Boolean                       = isDown
+  override def getIsDown: Boolean             = isDown
   override def getMode: Mode.BaseMode         = mode
   override def getExtra: List[ChordComponent] = extra
   override def getOmit: List[ChordComponent]  = omit
   override def getDelay: List[Delay]          = delay
+  override def getBaseFunction: BaseFunction  = baseFunction.getOrElse(sys.error("Base function not defined"))
+  override def getKey: Option[Key]            = key
+  def getPosition: Option[ChordComponent]     = position
 
   def withBaseFunction(bf: BaseFunction): Unit  = baseFunction = Some(bf)
   def withDegree(d: ScaleDegree.Degree): Unit   = degree = Some(d)

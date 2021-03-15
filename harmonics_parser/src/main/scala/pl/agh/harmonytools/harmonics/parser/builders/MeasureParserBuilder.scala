@@ -1,7 +1,7 @@
 package pl.agh.harmonytools.harmonics.parser.builders
 
-import pl.agh.harmonytools.harmonics.exercise.Measure
-import pl.agh.harmonytools.harmonics.exercise.helpers.DelayHandler
+import pl.agh.harmonytools.exercise.harmonics.Measure
+import pl.agh.harmonytools.exercise.harmonics.helpers.DelayHandler
 
 class MeasureParserBuilder(private var harmonicFunctions: Option[List[HarmonicFunctionParserBuilder]] = None) {
   def withHarmonicFunctions(hf: List[HarmonicFunctionParserBuilder]): Unit = harmonicFunctions = Some(hf)

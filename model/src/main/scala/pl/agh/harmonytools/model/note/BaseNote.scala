@@ -3,7 +3,7 @@ package pl.agh.harmonytools.model.note
 import pl.agh.harmonytools.utils.Extensions.ExtendedInt
 
 object BaseNote  {
-  sealed abstract class BaseNoteType(value: Int) {
+  sealed abstract class BaseNoteType(val value: Int) {
     def +(x: Int): BaseNoteType = {
       fromInt((value + x) %% 7)
     }
